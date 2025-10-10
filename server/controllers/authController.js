@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
-const { where } = require("sequelize");
 
 // REGISTER USER
 exports.registerUser = async (req, res) => {
@@ -23,12 +22,17 @@ exports.registerUser = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role: role || "student", 
+      role: role || "student",
     });
 
     res.status(201).json({
       message: "User registered successfully",
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user.id, // ✅ use Sequelize’s id
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -43,14 +47,15 @@ exports.loginUser = async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ message: "All fields are required" });
 
-    const user = await User.findOne({ where: { email } });
+    const user = await User.findOne({ where: { email } }); // ✅ correct syntax
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(401).json({ message: "Invalid credentials" });
+    if (!isMatch)
+      return res.status(401).json({ message: "Invalid credentials" });
 
     const token = jwt.sign(
-      { id: user._id, role: user.role },
+      { id: user.id, role: user.role }, // ✅ use user.id
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
@@ -58,7 +63,12 @@ exports.loginUser = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      user: { id: user._id, name: user.name, email: user.email, role: user.role },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
@@ -68,8 +78,12 @@ exports.loginUser = async (req, res) => {
 // GET USER PROFILE
 exports.getProfile = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findByPk(req.user.id, {
+      attributes: { exclude: ["password"] }, // ✅ Sequelize way to exclude fields
+    });
+
     if (!user) return res.status(404).json({ message: "User not found" });
+
     res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
