@@ -1,0 +1,36 @@
+<div class="container mt-5" style="max-width: 500px;">
+  <h2 class="text-center mb-4 text-primary fw-bold">Register</h2>
+
+  <form [formGroup]="registerForm" (ngSubmit)="submitRegister()">
+    <div class="mb-3">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-control" formControlName="name" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" formControlName="email" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Password</label>
+      <input type="password" class="form-control" formControlName="password" />
+    </div>
+
+    <!-- Hidden default role -->
+    <input type="hidden" formControlName="role" value="student" />
+
+    <button type="submit" class="btn btn-primary w-100">Register</button>
+  </form>
+
+  <!-- small line below form -->
+  <p class="text-center mt-3 text-muted">
+    Already have an account?
+    <a routerLink="/login" class="text-primary fw-semibold text-decoration-none">
+      Login here
+    </a>
+  </p>
+
+
+  
+</div>
