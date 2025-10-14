@@ -1,57 +1,79 @@
 // controllers/authController.js
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { createUser, findUserByEmail } from '../models/User.js';
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const User = require('../models/userModel');
 
-export const registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
+  console.log('⭐ Register attempt:', req.body);
   try {
     const { name, email, password, role } = req.body;
 
-    const existing = await findUserByEmail(email);
-    if (existing) return res.status(400).json({ message: 'User already exists' });
+    console.log('📝 Checking for existing user with email:', email);
+    const existing = await User.findOne({ where: { email } });
+    if (existing) {
+      console.log('❌ User already exists');
+      return res.status(400).json({ message: 'User already exists' });
+    }
 
-    // if role is admin, reject (only seedAdmin can create admin)
     if (role === 'admin') {
+      console.log('❌ Attempted admin registration');
       return res.status(403).json({ message: 'Admin cannot self-register' });
     }
 
-    const isApproved = role === 'author' ? false : true;
-    const user = await createUser({ name, email, password, role, isApproved });
+    console.log('🔒 Hashing password...');
+    const hashedPassword = await bcrypt.hash(password, 10);
 
+    console.log('👤 Creating new user with role:', role);
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role
+    });
+
+    console.log('✅ User created successfully:', user.id);
     res.status(201).json({
       message: 'Registration successful',
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role,
-        isApproved: user.isApproved,
+        role: user.role
       },
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('❌ Registration error:', err);
+    res.status(500).json({ message: err.message, stack: err.stack });
   }
 };
 
-export const loginUser = async (req, res) => {
+const loginUser = async (req, res) => {
+  console.log('🔑 Login attempt:', { email: req.body.email });
   try {
     const { email, password } = req.body;
-    const user = await findUserByEmail(email);
-    if (!user) return res.status(404).json({ message: 'User not found' });
 
+    console.log('🔍 Finding user...');
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      console.log('❌ User not found');
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log('🔒 Verifying password...');
     const valid = await bcrypt.compare(password, user.password);
-    if (!valid) return res.status(400).json({ message: 'Invalid credentials' });
+    if (!valid) {
+      console.log('❌ Invalid password');
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
 
-    if (!user.isApproved)
-      return res.status(403).json({ message: 'Account pending admin approval' });
-
-    // Create JWT token
+    console.log('📝 Generating JWT token...');
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 
+    console.log('✅ Login successful for user:', user.id);
     res.status(200).json({
       message: 'Login successful',
       token,
@@ -59,10 +81,22 @@ export const loginUser = async (req, res) => {
         id: user.id,
         name: user.name,
         email: user.email,
-        role: user.role,
+        role: user.role
       },
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('❌ Login error:', err);
+    res.status(500).json({ message: err.message, stack: err.stack });
   }
+};
+
+const getProfile = async (req, res) => {
+  console.log('👤 Getting profile for user:', req.user.id);
+  res.json(req.user);
+};
+
+module.exports = {
+  registerUser,
+  loginUser,
+  getProfile
 };
