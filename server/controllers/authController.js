@@ -16,7 +16,6 @@ const registerUser = async (req, res) => {
     }
 
     if (role === 'admin') {
-      console.log(' Attempted admin registration');
       return res.status(403).json({ message: 'Admin cannot self-register' });
     }
 
@@ -51,22 +50,16 @@ const loginUser = async (req, res) => {
   console.log('🔑 Login attempt:', { email: req.body.email });
   try {
     const { email, password } = req.body;
-
-    console.log('🔍 Finding user...');
     const user = await User.findOne({ where: { email } });
     if (!user) {
       console.log(' User not found');
       return res.status(404).json({ message: 'User not found' });
     }
-
-    console.log('🔒 Verifying password...');
     const valid = await bcrypt.compare(password, user.password);
     if (!valid) {
       console.log(' Invalid password');
       return res.status(400).json({ message: 'Invalid credentials' });
     }
-
-    console.log(' Generating JWT token...');
     const token = jwt.sign(
       { id: user.id, role: user.role },
       process.env.JWT_SECRET,
