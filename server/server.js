@@ -6,11 +6,16 @@ const app = express();
 
 // Import your models
 const User = require('./models/userModel'); // ✅ make sure this line is here
+const Course = require('./models/course');
+const CourseContent = require('./models/courseContent');
+const Enrollment = require('./models/enrollment');
+
+// Import models index to set up associations
+const db = require('./models');
 
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", require("./routes/authRoute"));
-app.use('/uploads', express.static('uploads'));
 
 app.get('/', (req, res) => res.json({ ok: true, message: 'EduQuest API running' }));
 
