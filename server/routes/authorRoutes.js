@@ -1,0 +1,10 @@
+const express = require("express");
+const router = express.Router();
+const authMiddleware = require("../middleware/authMiddleware");
+const authorController = require("../controllers/authorController");
+router.use(authMiddleware);
+router.post("/courses", authorController.createCourse);
+router.put("/courses/:id", authorController.updateCourse);
+router.post("/courses/:courseId/contents", authorController.addCourseContent);
+router.get("/courses", authorController.getMyCourses);
+module.exports = router;

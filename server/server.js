@@ -16,6 +16,9 @@ const db = require('./models');
 app.use(cors());
 app.use(express.json());
 app.use("/api/auth", require("./routes/authRoute"));
+app.use("/api/student", require("./routes/studentRoutes"));
+app.use("/api/author", require("./routes/authorRoutes"));
+
 
 app.get('/', (req, res) => res.json({ ok: true, message: 'EduQuest API running' }));
 
