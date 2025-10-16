@@ -1,0 +1,16 @@
+<div *ngIf="course" class="container mt-4">
+  <h2>{{ course.title }}</h2>
+  <p>{{ course.description }}</p>
+
+  <button *ngIf="!course.isEnrolled" class="btn btn-success" (click)="enroll()">
+    Enroll
+  </button>
+
+  <h4 class="mt-4">Course Contents</h4>
+  <ul class="list-group">
+    <li *ngFor="let c of course.contents" class="list-group-item d-flex justify-content-between align-items-center">
+      {{ c.title }} ({{ c.contentType }})
+      <button class="btn btn-outline-primary btn-sm" (click)="openContent(c.id)">Open</button>
+    </li>
+  </ul>
+</div>
