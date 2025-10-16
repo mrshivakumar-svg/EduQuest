@@ -1,24 +1,21 @@
 const express = require('express');
 const router = express.Router();
 
-// ✅ CORRECTED IMPORTS
-const authMiddleware = require('../middleware/authMiddleware');
-const roleMiddleware = require('../middleware/roleMiddleware');
-
 const {
   createAuthor,
   getAllAuthors,
   deleteAuthor,
   getAllCourses,
   publishCourse,
-  getCourseEnrollments
+  getCourseEnrollments,
+  getAllStudents,
+  deleteStudent
 } = require('../controllers/adminController');
 
+const authMiddleware = require('../middleware/authMiddleware');
 
-// This middleware will protect all routes in this file
-// It first checks for a valid token, then checks if the user role is 'admin'
-router.use(authMiddleware, roleMiddleware('admin'));
-
+// This middleware protects all routes in this file
+router.use(authMiddleware('admin'));
 
 // === Author Management Routes ===
 router.get('/authors', getAllAuthors);
@@ -30,5 +27,8 @@ router.get('/courses', getAllCourses);
 router.put('/courses/:id/publish', publishCourse);
 router.get('/courses/:id/enrollments', getCourseEnrollments);
 
+// === Student Management Routes ===
+router.get('/students', getAllStudents);
+router.delete('/students/:id', deleteStudent);
 
 module.exports = router;

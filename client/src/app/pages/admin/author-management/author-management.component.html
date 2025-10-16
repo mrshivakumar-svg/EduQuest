@@ -1,0 +1,25 @@
+<div class="author-management">
+  <h2>Create New Author</h2>
+  <form [formGroup]="authorForm" (ngSubmit)="onCreateAuthor()" class="author-form">
+    <input type="text" placeholder="Name" formControlName="name">
+    <input type="email" placeholder="Email" formControlName="email">
+    <input type="password" placeholder="Password" formControlName="password">
+    <button type="submit" [disabled]="authorForm.invalid">Create Author</button>
+  </form>
+
+  <h2>Existing Authors</h2>
+  <table>
+    <thead>
+      <tr> <th>Name</th> <th>Email</th> <th>Actions</th> </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let author of authors">
+        <td>{{ author.name }}</td>
+        <td>{{ author.email }}</td>
+        <td class="actions">
+          <button class="delete-btn" (click)="onDeleteAuthor(author.id)">Delete</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

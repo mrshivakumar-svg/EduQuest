@@ -1,1 +1,42 @@
-<p>admin-dashboard works!</p>
+<div class="admin-container">
+  <h1>Admin Dashboard</h1>
+
+  <nav class="tabs">
+    <button [class.active]="activeTab === 'courses'" (click)="activeTab = 'courses'">Course Management</button>
+    <button [class.active]="activeTab === 'authors'" (click)="activeTab = 'authors'">Author Management</button>
+    <button [class.active]="activeTab === 'students'" (click)="activeTab = 'students'">Student Management</button>
+  </nav>
+
+  <div *ngIf="activeTab === 'courses'" class="tab-content">
+    <h2>All Courses</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let course of courses">
+          <td>{{ course.title }}</td>
+          <td>{{ course.author?.name || 'N/A' }}</td>
+          <td><span class="status" [ngClass]="course.status">{{ course.status }}</span></td>
+          <td class="actions">
+            <button *ngIf="course.status === 'pending'" class="publish-btn" (click)="onPublish(course.id)">Publish</button>
+            <button class="delete-btn" (click)="onDeleteCourse(course.id)">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="activeTab === 'authors'" class="tab-content">
+    <app-author-management></app-author-management>
+  </div>
+
+  <div *ngIf="activeTab === 'students'" class="tab-content">
+    <app-student-management></app-student-management>
+  </div>
+</div>
