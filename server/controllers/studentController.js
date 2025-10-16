@@ -113,7 +113,7 @@ exports.getMyEnrollments = async (req, res) => {
     const enrollments = await Enrollment.findAll({
       where: { userId },
       include: [
-        { model: Course, attributes: ["id", "title", "thumbnailUrl", "status", "price"] },
+        { model: Course, attributes: ["id", "title", "description", "thumbnailUrl", "status", "price"] },
       ],
     });
 
