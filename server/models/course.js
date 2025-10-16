@@ -36,6 +36,10 @@ const Course = sequelize.define(
     authorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
+       references: {
+       model: 'users',
+       key: 'id'
+  }
     },
   },
   {

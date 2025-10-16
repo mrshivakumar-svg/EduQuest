@@ -23,7 +23,6 @@ app.use(express.json());
 app.use("/api/auth", require("./routes/authRoute"));
 app.use("/api/student", require("./routes/studentRoutes"));
 app.use("/api/author", require("./routes/authorRoutes"));
-// ✅ ADD THIS LINE (with other route middleware)
 app.use("/api/admin", require("./routes/adminRoute"));
 
 

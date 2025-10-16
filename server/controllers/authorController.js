@@ -59,16 +59,31 @@ const addCourseContent = async (req, res) => {
 };
 const getMyCourses = async (req, res) => {
   try {
+    // Ensure the user is authenticated
+    if (!req.user || !req.user.id) {
+      return res.status(401).json({ message: "Unauthorized: No user found" });
+    }
+
+    console.log("🔑 Logged-in user:", req.user);
     const courses = await Course.findAll({
       where: { authorId: req.user.id },
-      include: [{ model: CourseContent, as: "contents" }],
+      include: [
+        {
+          model: CourseContent,
+          as: "contents",
+        },
+      ],
     });
+
+    console.log("📚 Courses fetched:", courses.length);
+
     res.json({ courses });
   } catch (err) {
-    console.error("Error fetching courses:", err);
-    res.status(500).json({ message: err.message });
+    console.error("❌ Error fetching author's courses:", err);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 module.exports = {
   createCourse,
   updateCourse,

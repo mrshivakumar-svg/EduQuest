@@ -1,0 +1,58 @@
+.create-course {
+  background: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+
+  .form-card {
+    background: #fff;
+    max-width: 600px;
+    width: 100%;
+    border: 1px solid #eaeaea;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    h2 {
+      font-size: 1.8rem;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      padding: 0.75rem;
+      font-size: 1rem;
+      transition: all 0.2s ease;
+
+      &:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+      }
+    }
+
+    .btn-gradient {
+      background: linear-gradient(135deg, #007bff, #00b4d8);
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 0.6rem 1.5rem;
+      font-weight: 500;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+      }
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+    }
+
+    small {
+      font-size: 0.85rem;
+    }
+  }
+}

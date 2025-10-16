@@ -1,1 +1,62 @@
-<p>create-course works!</p>
+<!-- src/app/pages/create-course/create-course.component.html -->
+<div class="create-course container py-5">
+  <div class="form-card mx-auto shadow-lg rounded-4 p-4 p-md-5">
+    <h2 class="text-center fw-bold text-primary mb-4">
+      <i class="fa fa-book me-2"></i> Create a New Course
+    </h2>
+
+    <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Course Title</label>
+        <input type="text" formControlName="title" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Description</label>
+        <textarea
+          formControlName="description"
+          class="form-control"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Price (₹)</label>
+        <input type="number" formControlName="price" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Expiry Date</label>
+        <input type="date" formControlName="expiryDate" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-semibold">Thumbnail URL</label>
+        <input type="text" formControlName="thumbnailUrl" class="form-control" />
+      </div>
+
+      <div *ngIf="message" class="text-center mb-3">
+        <p
+          [ngClass]="{
+            'text-success fw-semibold': message.includes('✅'),
+            'text-danger fw-semibold': message.includes('❌'),
+            'text-warning': message.includes('⚠️')
+          }"
+        >
+          {{ message }}
+        </p>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-gradient w-100"
+        [disabled]="loading"
+      >
+        <span *ngIf="!loading">Create Course</span>
+        <span *ngIf="loading">
+          <span class="spinner-border spinner-border-sm me-2"></span> Saving...
+        </span>
+      </button>
+    </form>
+  </div>
+</div>
