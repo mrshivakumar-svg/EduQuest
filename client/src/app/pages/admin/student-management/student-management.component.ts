@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; // ✅ IMPORT
 import { AdminService } from '../../../services/admin.service';
 
 @Component({
   selector: 'app-student-management',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule], // ✅ ADD
   templateUrl: './student-management.component.html',
   styleUrls: ['./student-management.component.scss']
 })
@@ -27,7 +27,7 @@ export class StudentManagementComponent implements OnInit {
   onDeleteStudent(studentId: number): void {
     if (confirm('Are you sure you want to delete this student?')) {
       this.adminService.deleteStudent(studentId).subscribe(() => {
-        this.loadStudents(); // Refresh the list after deletion
+        this.loadStudents();
       });
     }
   }

@@ -1,12 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AdminService } from '../../../services/admin.service';
+import { ApiService } from '../../../services/api.service'; // ✅ CORRECTED: Use ApiService
 
 @Component({
   selector: 'app-author-management',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule
+  ],
   templateUrl: './author-management.component.html',
   styleUrls: ['./author-management.component.scss']
 })
@@ -15,7 +18,7 @@ export class AuthorManagementComponent implements OnInit {
   authorForm!: FormGroup;
 
   constructor(
-    private adminService: AdminService,
+    private apiService: ApiService, // ✅ CORRECTED: Use ApiService
     private fb: FormBuilder
   ) { }
 
@@ -29,23 +32,28 @@ export class AuthorManagementComponent implements OnInit {
   }
 
   loadAuthors(): void {
-    this.adminService.getAllAuthors().subscribe(data => {
+    this.apiService.getAllAuthors().subscribe(data => { // ✅ CORRECTED
       this.authors = data;
     });
   }
 
   onCreateAuthor(): void {
     if (this.authorForm.valid) {
-      this.adminService.createAuthor(this.authorForm.value).subscribe(() => {
-        this.authorForm.reset();
-        this.loadAuthors();
+      this.apiService.createAuthor(this.authorForm.value).subscribe({ // ✅ CORRECTED
+        next: () => {
+          this.authorForm.reset();
+          this.loadAuthors();
+        },
+        error: (err) => {
+          console.error('Failed to create author:', err); // Added error logging
+        }
       });
     }
   }
 
   onDeleteAuthor(authorId: number): void {
     if (confirm('Are you sure you want to delete this author?')) {
-      this.adminService.deleteAuthor(authorId).subscribe(() => this.loadAuthors());
+      this.apiService.deleteAuthor(authorId).subscribe(() => this.loadAuthors()); // ✅ CORRECTED
     }
   }
 }
