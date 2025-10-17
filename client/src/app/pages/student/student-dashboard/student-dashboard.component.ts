@@ -13,31 +13,53 @@ import { CommonModule } from '@angular/common';
 export class StudentDashboardComponent implements OnInit {
   courses: any[] = [];
   loading = true;
+  user: any = null;
 
   constructor(private apiService: ApiService, private router: Router) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
+    this.loadUserProfile();
     this.loadCourses();
   }
 
-  loadCourses() {
+  // Navigate to Profile page
+  goToProfile(): void {
+    this.router.navigate(['/student/profile']);
+  }
+
+  // Navigate to My Courses page
+  goToMyCourses(): void {
+    this.router.navigate(['/student/my-courses']);
+  }
+
+  // Load logged-in user profile
+  loadUserProfile(): void {
+    this.apiService.getProfile().subscribe({
+      next: (data) => {
+        this.user = data;
+      },
+      error: (err) => {
+        console.error('Error loading profile:', err);
+      },
+    });
+  }
+
+  // Load all approved courses and mark enrolled ones
+  loadCourses(): void {
     this.loading = true;
 
-    // Step 1: Get all approved courses
     this.apiService.getAllCourses().subscribe({
       next: (courseData) => {
         const allCourses = Array.isArray(courseData)
           ? courseData
           : courseData.courses || [];
 
-        // Step 2: Get student's enrollments
         this.apiService.getMyEnrollments().subscribe({
           next: (enrollData) => {
-            const enrolledIds = Array.isArray(enrollData)
-              ? enrollData.map((e: any) => e.courseId)
-              : (enrollData.enrollments || []).map((e: any) => e.courseId);
+            const enrolledIds = Array.isArray(enrollData.enrollments)
+              ? enrollData.enrollments.map((e: any) => e.courseId)
+              : [];
 
-            // Step 3: Combine both
             this.courses = allCourses
               .filter((c: any) => c.status?.toLowerCase() === 'approved')
               .map((c: any) => ({
@@ -60,11 +82,13 @@ export class StudentDashboardComponent implements OnInit {
     });
   }
 
-  viewCourseDetails(id: string) {
-    this.router.navigate([`/student/courses/${id}`]);
+  // View details of a course
+  viewCourseDetails(id: number): void {
+    this.router.navigate(['/student/course', id]);
   }
 
-  enrollInCourse(id: string) {
+  // Enroll in a course
+  enrollInCourse(id: number): void {
     const course = this.courses.find((c) => c.id === Number(id));
     if (!course) return;
 
@@ -77,18 +101,14 @@ export class StudentDashboardComponent implements OnInit {
         alert('✅ Enrolled successfully!');
       },
       error: (err) => {
-        console.error(err);
+        console.error('Enroll error:', err);
         course.loading = false;
         if (err.error?.message === 'Already enrolled in this course') {
-          course.isEnrolled = true; // reflect it instantly
+          course.isEnrolled = true;
         } else {
           alert('❌ Failed to enroll.');
         }
       },
     });
-  }
-
-  goToMyEnrollments() {
-    this.router.navigate(['/student/enrollments']);
   }
 }

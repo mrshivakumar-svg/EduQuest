@@ -8,7 +8,9 @@ import { CommonModule } from '@angular/common';
   selector: 'app-create-course',
   templateUrl: './create-course.component.html',
   styleUrls: ['./create-course.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule]
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule],
+  providers: [ApiService]
 })
 export class CreateCourseComponent implements OnInit {
   courseForm: FormGroup;
@@ -46,7 +48,7 @@ export class CreateCourseComponent implements OnInit {
     return (this.courseForm.get('contents') as FormArray).controls;
   }
 
-  addNewContent() {
+  addNewContent(): void {
     (this.courseForm.get('contents') as FormArray).push(
       this.fb.group({
         id: [null],
@@ -57,17 +59,16 @@ export class CreateCourseComponent implements OnInit {
     );
   }
 
-  removeContent(index: number) {
+  removeContent(index: number): void {
     (this.courseForm.get('contents') as FormArray).removeAt(index);
   }
 
-  private loadCourseData(id: string) {
+  private loadCourseData(id: string): void {
     this.api.getCourseById(id).subscribe({
       next: (res: any) => {
         const course = res.course;
         if (!course) return;
 
-        // Patch course info
         this.courseForm.patchValue({
           title: course.title,
           description: course.description,
@@ -76,7 +77,6 @@ export class CreateCourseComponent implements OnInit {
           expiryDate: course.expiryDate ? course.expiryDate.split('T')[0] : ''
         });
 
-        // Load existing contents
         const contentsArray = this.courseForm.get('contents') as FormArray;
         contentsArray.clear();
         course.contents.forEach((c: any) => {
@@ -94,18 +94,22 @@ export class CreateCourseComponent implements OnInit {
     });
   }
 
-  saveCourse() {
-    if (!this.courseForm.valid) return;
+  saveCourse(): void {
+    console.log('🟢 Save course clicked', this.courseForm.value);
+
+    if (!this.courseForm.valid) {
+      console.warn('⚠️ Form invalid');
+      return;
+    }
 
     const courseData = { ...this.courseForm.value };
     const contentsArray = courseData.contents;
     delete courseData.contents;
 
     if (this.isEditMode && this.courseId) {
-      // Update course info
+      // Update course
       this.api.updateCourse(this.courseId, courseData).subscribe({
         next: () => {
-          // Update existing contents & add new
           contentsArray.forEach((c: any) => {
             if (c.id) {
               this.api.updateCourseContent(c.id, c).subscribe();

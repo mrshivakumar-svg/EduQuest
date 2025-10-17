@@ -1,0 +1,32 @@
+<div class="container mt-4">
+  <h2 class="text-primary mb-4">🎓 My Enrolled Courses</h2>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-2">Loading your courses...</p>
+  </div>
+
+  <div *ngIf="!loading && myCourses.length === 0" class="alert alert-info">
+    You haven’t enrolled in any courses yet.
+  </div>
+
+  <div class="row" *ngIf="!loading && myCourses.length > 0">
+    <div class="col-md-4 mb-4" *ngFor="let course of myCourses">
+      <div class="card shadow-sm h-100">
+        <div class="card-body">
+          <h5 class="card-title text-primary">{{ course.title }}</h5>
+          <p class="card-text text-muted">
+            {{ course.description?.slice(0, 120) }}{{ course.description?.length > 120 ? '...' : '' }}
+          </p>
+          <p class="mb-2"><strong>Price:</strong> {{ course.price | currency }}</p>
+          <button
+            class="btn btn-outline-primary btn-sm"
+            (click)="viewCourseDetails(course.id)"
+          >
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
