@@ -19,6 +19,16 @@ export class AuthorDashboardComponent implements OnInit {
   constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit(): void {
+    // Only access localStorage if window is defined (client-side)
+    if (typeof window === 'undefined') return;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.warn('⚠️ No token found. Redirecting to login.');
+      this.router.navigate(['/login']); // redirect if not logged in
+      return;
+    }
+
     this.fetchCourses();
   }
 
@@ -32,6 +42,12 @@ export class AuthorDashboardComponent implements OnInit {
       error: (err) => {
         console.error('Error fetching courses:', err);
         this.loading = false;
+
+        if (err.status === 401) {
+          alert('Session expired. Please login again.');
+          localStorage.removeItem('token');
+          this.router.navigate(['/login']);
+        }
       }
     });
   }
@@ -45,7 +61,6 @@ export class AuthorDashboardComponent implements OnInit {
   }
 
   uploadContent(courseId: number): void {
-    // Navigate to content upload page
     this.router.navigate(['/author/create/course', courseId]);
   }
 }
