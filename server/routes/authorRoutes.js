@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/authMiddleware");
 const authorController = require("../controllers/authorController");
-router.use(authMiddleware);
+router.use(authMiddleware());
 // course routes
 router.post("/courses", authorController.createCourse);
 router.put("/courses/:id", authorController.updateCourse);
