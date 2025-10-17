@@ -1,1 +1,34 @@
-/* Add styles for the author management component here */
+// This rule imports all the main table and button styles from the parent dashboard.
+// This keeps the look consistent without duplicating code.
+@import '../admin-dashboard/admin-dashboard.component.scss';
+
+// What this does: Styles the form for creating a new author.
+.author-form {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  align-items: center;
+
+  input {
+    padding: 0.75rem;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    font-size: 1rem;
+    flex-grow: 1;
+  }
+
+  button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: #ffffff;
+    cursor: pointer;
+    font-size: 1rem;
+    
+    &:disabled {
+      background-color: #a0c7ff;
+      cursor: not-allowed;
+    }
+  }
+}

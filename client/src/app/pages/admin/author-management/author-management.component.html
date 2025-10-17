@@ -10,7 +10,11 @@
   <h2>Existing Authors</h2>
   <table>
     <thead>
-      <tr> <th>Name</th> <th>Email</th> <th>Actions</th> </tr>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
     </thead>
     <tbody>
       <tr *ngFor="let author of authors">
@@ -22,4 +26,7 @@
       </tr>
     </tbody>
   </table>
+  <div *ngIf="authors.length === 0" class="empty-placeholder">
+    No authors have been created yet.
+  </div>
 </div>

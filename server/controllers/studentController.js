@@ -109,13 +109,16 @@ exports.enrollInCourse = async (req, res) => {
 // 4️⃣ View all enrolled courses
 exports.getMyEnrollments = async (req, res) => {
   try {
+    console.log("user:", req.user);
     const userId = req.user.id;
+    console.log("user id:", userId);
     const enrollments = await Enrollment.findAll({
       where: { userId },
       include: [
-        { model: Course, attributes: ["id", "title", "thumbnailUrl", "status", "price"] },
+        { model: Course, attributes: ["id", "title", "description", "thumbnailUrl", "status", "price"] },
       ],
     });
+    console.log("Enrollments fetched:", JSON.stringify(enrollments, null, 2));
 
     res.json({ total: enrollments.length, enrollments });
   } catch (err) {

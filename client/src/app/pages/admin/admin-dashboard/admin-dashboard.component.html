@@ -7,36 +7,47 @@
     <button [class.active]="activeTab === 'students'" (click)="activeTab = 'students'">Student Management</button>
   </nav>
 
-  <div *ngIf="activeTab === 'courses'" class="tab-content">
-    <h2>All Courses</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Author</th>
-          <th>Status</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let course of courses">
-          <td>{{ course.title }}</td>
-          <td>{{ course.author?.name || 'N/A' }}</td>
-          <td><span class="status" [ngClass]="course.status">{{ course.status }}</span></td>
-          <td class="actions">
-            <button *ngIf="course.status === 'pending'" class="publish-btn" (click)="onPublish(course.id)">Publish</button>
-            <button class="delete-btn" (click)="onDeleteCourse(course.id)">Delete</button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <div class="tab-content">
+    <!-- Course Management View -->
+    <div *ngIf="activeTab === 'courses'">
+      <h2>All Courses</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- This loop shows a row for each course -->
+          <tr *ngFor="let course of courses">
+            <td>{{ course.title }}</td>
+            <td>{{ course.author?.name || 'N/A' }}</td>
+            <td><span class="status" [ngClass]="course.status">{{ course.status }}</span></td>
+            <td class="actions">
+              <!-- The "Publish" button will only appear if the course status is 'pending' -->
+              <button *ngIf="course.status === 'pending'" class="publish-btn" (click)="onPublish(course.id)">Publish</button>
+              <button class="delete-btn" (click)="onDeleteCourse(course.id)">Delete</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- This placeholder message will show ONLY if the courses array is empty -->
+      <div *ngIf="courses.length === 0" class="empty-placeholder">
+        No courses found. New courses created by authors will appear here for approval.
+      </div>
+    </div>
 
-  <div *ngIf="activeTab === 'authors'" class="tab-content">
-    <app-author-management></app-author-management>
-  </div>
+    <!-- Author Management View -->
+    <div *ngIf="activeTab === 'authors'">
+      <app-author-management></app-author-management>
+    </div>
 
-  <div *ngIf="activeTab === 'students'" class="tab-content">
-    <app-student-management></app-student-management>
+    <!-- Student Management View -->
+    <div *ngIf="activeTab === 'students'">
+      <app-student-management></app-student-management>
+    </div>
   </div>
 </div>

@@ -1,1 +1,127 @@
-/* Add styles for the admin dashboard component here */
+// --- Main Container ---
+// What this does: Adds spacing around the entire dashboard to give it a clean, centered feel.
+.admin-container {
+  padding: 2rem 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+// What this does: Sets the main title "Admin Dashboard" to be large, bold, and blue to match your app's theme.
+h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #007bff;
+}
+
+// What this does: Styles the subtitles like "All Courses" to be clear and organized.
+h2 {
+  font-size: 1.75rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #dee2e6;
+  padding-bottom: 0.5rem;
+  color: #333;
+}
+
+// --- Tab Styling ---
+// What this does: Turns the plain text into a professional-looking tab navigation bar.
+.tabs {
+  margin-bottom: 2rem;
+  border-bottom: 2px solid #dee2e6;
+
+  button {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    color: #6c757d;
+
+    // Highlights the currently active tab in blue.
+    &.active {
+      font-weight: 600;
+      color: #007bff;
+      border-bottom-color: #007bff;
+    }
+  }
+}
+
+// --- Table Styling ---
+// What this does: Transforms your plain table into a modern data grid with shadows and hover effects.
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  overflow: hidden;
+
+  th, td {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f3f5;
+  }
+}
+
+// --- Empty Table Placeholder ---
+// What this does: Shows a helpful message when a table has no data, instead of just an empty header.
+.empty-placeholder {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+  background-color: #f8f9fa;
+}
+
+
+// --- Status Badge Styling ---
+// What this does: Creates colorful, rounded badges for the "Status" column.
+.status {
+  padding: 0.3rem 0.8rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: capitalize;
+
+  &.approved {
+    background-color: #d4edda;
+    color: #155724;
+  }
+  &.pending {
+    background-color: #fff3cd;
+    color: #856404;
+  }
+}
+
+// --- Action Button Styling ---
+// What this does: Styles the "Publish" and "Delete" buttons with clear colors.
+.actions button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  color: #ffffff;
+  font-weight: 500;
+  margin-right: 0.5rem;
+  transition: background-color 0.2s ease-in-out;
+
+  &.publish-btn {
+    background-color: #28a745; // Green
+    &:hover { background-color: #218838; }
+  }
+  &.delete-btn {
+    background-color: #dc3545; // Red
+    &:hover { background-color: #c82333; }
+  }
+}

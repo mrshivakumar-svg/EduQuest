@@ -33,5 +33,50 @@ export class ApiService {
     });
     return this.http.post(`${this.baseUrl}/author/courses`, courseData, { headers });
   }
+   getAllCourses(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get(`${this.baseUrl}/student/courses`, { headers });
+  }
+
+  getCourseDetails(id: number): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get(`${this.baseUrl}/student/courses/${id}`, { headers });
+  }
+
+  enrollInCourse(id: number): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.post(`${this.baseUrl}/student/courses/${id}/enroll`, {}, { headers });
+  }
+
+  getMyEnrollments(): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get(`${this.baseUrl}/student/my-enrollments`, { headers });
+  }
+
+  getCourseContent(courseId: number, contentId: number): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+    return this.http.get(`${this.baseUrl}/student/courses/${courseId}/contents/${contentId}`, { headers });
+  }
+
 }
 
