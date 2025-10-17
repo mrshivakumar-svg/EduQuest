@@ -1,86 +1,77 @@
-import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:5000/api';
+  private apiUrl = 'http://localhost:5000/api';
 
-  constructor(
-    private http: HttpClient,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  constructor(private http: HttpClient) {}
 
-  // Helper - Get JWT Token
-  private getToken(): string {
-    if (isPlatformBrowser(this.platformId)) {
-      return localStorage.getItem('token') || '';
-    }
-    return '';
-  }
-
-  // Common Header with Auth
   private getAuthHeaders(): HttpHeaders {
+    const token = typeof localStorage !== 'undefined' ? localStorage.getItem('token') || '' : '';
     return new HttpHeaders({
-      Authorization: `Bearer ${this.getToken()}`,
+      Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
   }
 
   // Auth APIs
   registerUser(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/auth/register`, data);
+    return this.http.post(`${this.apiUrl}/auth/register`, data);
   }
 
   loginUser(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/auth/login`, data);
+    return this.http.post(`${this.apiUrl}/auth/login`, data);
   }
 
-  // Author APIs
+  // ================== Author APIs ==================
   getAuthorCourses(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/author/courses`, {
+    return this.http.get(`${this.apiUrl}/author/courses`, {
       headers: this.getAuthHeaders()
     });
   }
+
   createCourse(courseData: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/author/courses`, courseData, {
+    return this.http.post(`${this.apiUrl}/author/courses`, courseData, {
       headers: this.getAuthHeaders()
     });
   }
-  getCourseById(id: string): Observable<any> {
-    return this.http.get(`${this.baseUrl}/author/courses/${id}`, {
-      headers: this.getAuthHeaders()
-    });
-  }
+
   updateCourse(id: string, courseData: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/author/courses/${id}`, courseData, {
+    return this.http.put(`${this.apiUrl}/author/courses/${id}`, courseData, {
       headers: this.getAuthHeaders()
     });
   }
+
+  getCourseById(id: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/author/courses/${id}`, {
+      headers: this.getAuthHeaders()
+    });
+  }
+
   addCourseContent(courseId: number, contentData: any): Observable<any> {
-    return this.http.post(
-      `${this.baseUrl}/author/courses/${courseId}/contents`,
-      contentData,
-      { headers: this.getAuthHeaders() }
-    );
+    return this.http.post(`${this.apiUrl}/author/courses/${courseId}/contents`, contentData, {
+      headers: this.getAuthHeaders()
+    });
   }
+
   updateCourseContent(contentId: number, contentData: any): Observable<any> {
-    return this.http.put(
-      `${this.baseUrl}/author/contents/${contentId}`,
-      contentData,
-      { headers: this.getAuthHeaders() }
-    );
+    return this.http.put(`${this.apiUrl}/author/contents/${contentId}`, contentData, {
+      headers: this.getAuthHeaders()
+    });
   }
-   getAllCourses(): Observable<any> {
+
+  // ================== Student APIs (UNCHANGED) ==================
+  getAllCourses(): Observable<any> {
     const token = localStorage.getItem('token');
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    return this.http.get(`${this.baseUrl}/student/courses`, { headers });
+    return this.http.get(`${this.apiUrl}/student/courses`, { headers });
   }
 
   getCourseDetails(id: number): Observable<any> {
@@ -89,7 +80,7 @@ export class ApiService {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    return this.http.get(`${this.baseUrl}/student/courses/${id}`, { headers });
+    return this.http.get(`${this.apiUrl}/student/courses/${id}`, { headers });
   }
 
   enrollInCourse(id: number): Observable<any> {
@@ -98,7 +89,7 @@ export class ApiService {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    return this.http.post(`${this.baseUrl}/student/courses/${id}/enroll`, {}, { headers });
+    return this.http.post(`${this.apiUrl}/student/courses/${id}/enroll`, {}, { headers });
   }
 
   getMyEnrollments(): Observable<any> {
@@ -107,7 +98,7 @@ export class ApiService {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    return this.http.get(`${this.baseUrl}/student/my-enrollments`, { headers });
+    return this.http.get(`${this.apiUrl}/student/my-enrollments`, { headers });
   }
 
   getCourseContent(courseId: number, contentId: number): Observable<any> {
@@ -116,19 +107,19 @@ export class ApiService {
       Authorization: `Bearer ${token}`,
       'Content-Type': 'application/json'
     });
-    return this.http.get(`${this.baseUrl}/student/courses/${courseId}/contents/${contentId}`, { headers });
+    return this.http.get(`${this.apiUrl}/student/courses/${courseId}/contents/${contentId}`, { headers });
   }
 
   // Add these methods at the bottom of the ApiService
 
 // Get student profile
 getProfile(): Observable<any> {
-  return this.http.get(`${this.baseUrl}/student/profile`, { headers: this.getAuthHeaders() });
+  return this.http.get(`${this.apiUrl}/student/profile`, { headers: this.getAuthHeaders() });
 }
 
 // Get my courses
 getMyCourses(): Observable<any> {
-  return this.http.get(`${this.baseUrl}/student/my-courses`, { headers: this.getAuthHeaders() });
+  return this.http.get(`${this.apiUrl}/student/my-courses`, { headers: this.getAuthHeaders() });
 }
 
 
