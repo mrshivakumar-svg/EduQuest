@@ -1,7 +1,7 @@
-const { Course, CourseContent, Enrollment } = require("../models");
+const { Course, CourseContent, Enrollment, User } = require("../models");
 const { Op } = require("sequelize");
 
-// Helper for pagination
+// Pagination helper
 const getPagination = (req) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
@@ -9,22 +9,20 @@ const getPagination = (req) => {
   return { limit, offset, page };
 };
 
-// 1️⃣ Get all approved courses
+// Get all approved courses
 exports.getAllCourses = async (req, res) => {
   try {
-    const { q } = req.query; // search keyword
+    const { q } = req.query;
     const { limit, offset, page } = getPagination(req);
 
     const where = {
       status: "approved",
-      ...(q
-        ? {
-            [Op.or]: [
-              { title: { [Op.iLike]: `%${q}%` } },
-              { description: { [Op.iLike]: `%${q}%` } },
-            ],
-          }
-        : {}),
+      ...(q ? {
+        [Op.or]: [
+          { title: { [Op.iLike]: `%${q}%` } },
+          { description: { [Op.iLike]: `%${q}%` } },
+        ]
+      } : {}),
     };
 
     const { count, rows } = await Course.findAndCountAll({
@@ -34,17 +32,13 @@ exports.getAllCourses = async (req, res) => {
       order: [["createdAt", "DESC"]],
     });
 
-    res.status(200).json({
-      page,
-      total: count,
-      courses: rows,
-    });
+    res.status(200).json({ page, total: count, courses: rows });
   } catch (err) {
     res.status(500).json({ message: "Error fetching courses", error: err.message });
   }
 };
 
-// 2️⃣ Get single course details
+// Get single course details
 exports.getCourseDetails = async (req, res) => {
   try {
     const courseId = req.params.id;
@@ -56,17 +50,15 @@ exports.getCourseDetails = async (req, res) => {
 
     if (!course) return res.status(404).json({ message: "Course not found" });
 
-    // check if student is enrolled
     const enrollment = await Enrollment.findOne({ where: { userId, courseId } });
     const isEnrolled = !!enrollment;
 
-    // hide file URLs if not enrolled
     const contents = isEnrolled
       ? course.contents
-      : course.contents.map((c) => ({
+      : course.contents.map(c => ({
           id: c.id,
           title: c.title,
-          contentType: c.contentType,
+          contentType: c.contentType
         }));
 
     res.json({
@@ -76,14 +68,14 @@ exports.getCourseDetails = async (req, res) => {
       price: course.price,
       status: course.status,
       isEnrolled,
-      contents,
+      contents
     });
   } catch (err) {
     res.status(500).json({ message: "Error fetching course details", error: err.message });
   }
 };
 
-// 3️⃣ Enroll in a course
+// Enroll in course
 exports.enrollInCourse = async (req, res) => {
   try {
     const courseId = req.params.id;
@@ -93,11 +85,10 @@ exports.enrollInCourse = async (req, res) => {
     if (!course) return res.status(404).json({ message: "Course not found" });
 
     if (course.status !== "approved")
-      return res.status(400).json({ message: "Course not available for enrollment" });
+      return res.status(400).json({ message: "Course not available" });
 
     const existing = await Enrollment.findOne({ where: { userId, courseId } });
-    if (existing)
-      return res.status(400).json({ message: "Already enrolled in this course" });
+    if (existing) return res.status(400).json({ message: "Already enrolled" });
 
     await Enrollment.create({ userId, courseId });
     res.status(201).json({ message: "Enrolled successfully!" });
@@ -106,66 +97,77 @@ exports.enrollInCourse = async (req, res) => {
   }
 };
 
-// 4️⃣ View all enrolled courses
+// View all enrolled courses
 exports.getMyEnrollments = async (req, res) => {
   try {
-    console.log("user:", req.user);
     const userId = req.user.id;
-    console.log("user id:", userId);
     const enrollments = await Enrollment.findAll({
       where: { userId },
-      include: [
-        { model: Course, attributes: ["id", "title", "description", "thumbnailUrl", "status", "price"] },
-      ],
+      include: [{ model: Course, attributes: ["id","title","description","thumbnailUrl","status","price"] }],
     });
-    console.log("Enrollments fetched:", JSON.stringify(enrollments, null, 2));
-
     res.json({ total: enrollments.length, enrollments });
   } catch (err) {
     res.status(500).json({ message: "Error fetching enrollments", error: err.message });
   }
 };
 
-// 5️⃣ Access specific course content
+// Access course content
 exports.getCourseContent = async (req, res) => {
   try {
     const { courseId, contentId } = req.params;
     const userId = req.user.id;
 
     const enrollment = await Enrollment.findOne({ where: { userId, courseId } });
-    if (!enrollment)
-      return res.status(403).json({ message: "Access denied: not enrolled" });
+    if (!enrollment) return res.status(403).json({ message: "Access denied" });
 
-    const content = await CourseContent.findOne({
-      where: { id: contentId, courseId },
-    });
+    const content = await CourseContent.findOne({ where: { id: contentId, courseId } });
+    if (!content) return res.status(404).json({ message: "Content not found" });
 
-    if (!content)
-      return res.status(404).json({ message: "Content not found" });
-
-    res.json({
-      id: content.id,
-      title: content.title,
-      fileUrl: content.fileUrl,
-      contentType: content.contentType,
-    });
+    res.json(content);
   } catch (err) {
     res.status(500).json({ message: "Error fetching content", error: err.message });
   }
 };
 
-// 6️⃣ Unenroll from a course
+// Unenroll
 exports.unenrollFromCourse = async (req, res) => {
   try {
     const userId = req.user.id;
     const courseId = req.params.id;
 
     const deleted = await Enrollment.destroy({ where: { userId, courseId } });
-    if (!deleted)
-      return res.status(404).json({ message: "You are not enrolled in this course" });
+    if (!deleted) return res.status(404).json({ message: "Not enrolled in this course" });
 
     res.json({ message: "Unenrolled successfully" });
   } catch (err) {
     res.status(500).json({ message: "Error unenrolling", error: err.message });
+  }
+};
+
+// ✅ NEW: Get student profile
+exports.getProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findByPk(userId, {
+      attributes: ["id","name","email","createdAt"]
+    });
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching profile", error: err.message });
+  }
+};
+
+// ✅ NEW: Get my courses (simplified for frontend)
+exports.getMyCourses = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const enrollments = await Enrollment.findAll({
+      where: { userId },
+      include: [{ model: Course, attributes: ["id","title","description","thumbnailUrl","price"] }],
+    });
+    const courses = enrollments.map(e => e.Course);
+    res.json({ total: courses.length, courses });
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching my courses", error: err.message });
   }
 };

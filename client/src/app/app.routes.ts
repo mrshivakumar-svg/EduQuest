@@ -32,6 +32,18 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { role: 'student' }
   },
+  {
+  path: 'student/my-courses',
+  loadComponent: () =>
+    import('./pages/student/my-courses/my-courses.component').then(m => m.MyCoursesComponent),
+},
+
+{
+  path: 'student/profile',
+  loadComponent: () =>
+    import('./pages/student/profile/profile.component').then(m => m.ProfileComponent),
+},
+
 
   // AUTHOR ROUTES
   {

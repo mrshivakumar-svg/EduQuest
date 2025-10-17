@@ -119,4 +119,17 @@ export class ApiService {
     return this.http.get(`${this.baseUrl}/student/courses/${courseId}/contents/${contentId}`, { headers });
   }
 
+  // Add these methods at the bottom of the ApiService
+
+// Get student profile
+getProfile(): Observable<any> {
+  return this.http.get(`${this.baseUrl}/student/profile`, { headers: this.getAuthHeaders() });
+}
+
+// Get my courses
+getMyCourses(): Observable<any> {
+  return this.http.get(`${this.baseUrl}/student/my-courses`, { headers: this.getAuthHeaders() });
+}
+
+
 }
