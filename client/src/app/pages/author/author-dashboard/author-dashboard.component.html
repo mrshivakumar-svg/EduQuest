@@ -22,52 +22,49 @@
     <button class="btn btn-gradient mt-2" (click)="goToCreateCourse()">+ Create Your First Course</button>
   </div>
 
+
   <!-- Course List -->
-  <div *ngIf="!loading && courses.length > 0" class="row g-4">
-    <div class="col-md-4" *ngFor="let course of courses">
-      <div class="card shadow-sm border-0 rounded-4 h-100 course-card">
-        <div class="course-image-wrapper position-relative">
-          <img
-            [src]="course.thumbnailUrl || 'https://via.placeholder.com/400x200?text=Course+Thumbnail'"
-            class="card-img-top"
-            alt="{{ course.title }}"
-          />
-          <span class="badge position-absolute top-0 end-0 m-2 px-3 py-2"
-            [ngClass]="{
-              'bg-warning text-dark': course.status === 'pending',
-              'bg-success': course.status === 'approved',
-              'bg-danger': course.status === 'rejected'
-            }">
-            {{ course.status | uppercase }}
-          </span>
-        </div>
+<div *ngIf="!loading && courses.length > 0" class="row g-4">
+  <div class="col-md-4" *ngFor="let course of courses">
+    <div class="card shadow-sm border-0 rounded-4 h-100 course-card">
+      <div class="course-image-wrapper position-relative">
+        <img
+          [src]="course.thumbnailUrl || 'https://via.placeholder.com/400x200?text=Course+Thumbnail'"
+          class="card-img-top"
+          alt="{{ course.title }}"
+        />
+        <span class="badge position-absolute top-0 end-0 m-2 px-3 py-2"
+          [ngClass]="{
+            'bg-warning text-dark': course.status === 'pending',
+            'bg-success': course.status === 'approved',
+            'bg-danger': course.status === 'rejected'
+          }">
+          {{ course.status | uppercase }}
+        </span>
+      </div>
 
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title text-primary">{{ course.title }}</h5>
-          <p class="card-text text-muted flex-grow-1">{{ course.description }}</p>
-          <p class="fw-bold text-secondary mb-3">💰 ${{ course.price }}</p>
+      <div class="card-body d-flex flex-column">
+        <h5 class="card-title text-primary">{{ course.title }}</h5>
+        <p class="card-text text-muted flex-grow-1">{{ course.description }}</p>
+        <p class="fw-bold text-secondary mb-3">${{ course.price }}</p>
 
-          <button
-            *ngIf="course.status === 'pending'"
-            class="btn btn-outline-primary w-100 mb-2"
-            (click)="editCourse(course.id)">
-            <i class="fa fa-edit me-1"></i> Edit Course
-          </button>
+        <!-- Pending or Approved courses can be edited -->
+        <button
+          *ngIf="course.status === 'pending' || course.status === 'approved'"
+          class="btn btn-outline-primary w-100 mb-2"
+          (click)="editCourse(course.id)">
+          <i class="fa fa-edit me-1"></i> Edit Course
+        </button>
 
-          <button
-            *ngIf="course.status === 'approved'"
-            class="btn btn-outline-success w-100 mb-2"
-            (click)="uploadContent(course.id)">
-            <i class="fa fa-upload me-1"></i> Upload Content
-          </button>
-
-          <button
-            *ngIf="course.status === 'rejected'"
-            class="btn btn-outline-danger w-100" disabled>
-            <i class="fa fa-ban me-1"></i> Rejected
-          </button>
-        </div>
+        <!-- Rejected courses remain disabled -->
+        <button
+          *ngIf="course.status === 'rejected'"
+          class="btn btn-outline-danger w-100" disabled>
+          <i class="fa fa-ban me-1"></i> Rejected
+        </button>
       </div>
     </div>
   </div>
+</div>
+
 </div>

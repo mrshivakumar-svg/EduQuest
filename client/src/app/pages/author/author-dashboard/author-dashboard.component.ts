@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from '../../../services/api.service';
-import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Router, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { ApiService } from '../../../services/api.service';
 
 @Component({
   selector: 'app-author-dashboard',
   templateUrl: './author-dashboard.component.html',
   styleUrls: ['./author-dashboard.component.scss'],
-  imports: [CommonModule, HttpClientModule]
+  standalone: true,
+  imports: [CommonModule, RouterModule, HttpClientModule],
+  providers: [ApiService]
 })
 export class AuthorDashboardComponent implements OnInit {
-
   courses: any[] = [];
   loading: boolean = true;
 
@@ -35,13 +36,12 @@ export class AuthorDashboardComponent implements OnInit {
     });
   }
 
-  editCourse(courseId: number): void {
-    this.router.navigate(['/edit-course', courseId]);
+  editCourse(courseId: string): void {
+    this.router.navigate(['/author/create-course', courseId]);
   }
 
   goToCreateCourse(): void {
-    // Navigate to create-course form component
-    this.router.navigate(['/create-course']);
+    this.router.navigate(['/author/create-course']);
   }
 
   uploadContent(courseId: number): void {

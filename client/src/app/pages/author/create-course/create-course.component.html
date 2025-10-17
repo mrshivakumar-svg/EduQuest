@@ -1,0 +1,77 @@
+<div class="create-course-container">
+  <h2 class="mb-4">{{ isEditMode ? 'Edit Course' : 'Create New Course' }}</h2>
+
+  <form [formGroup]="courseForm" (ngSubmit)="saveCourse()">
+    <!-- Course Info Card -->
+    <div class="course-info-card mb-4 border rounded p-3 shadow-sm">
+      <h4 class="fw-bold mb-3">Course Information</h4>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Title</label>
+        <input type="text" formControlName="title" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Description</label>
+        <textarea formControlName="description" class="form-control"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Price</label>
+        <input type="number" formControlName="price" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Thumbnail URL</label>
+        <input type="text" formControlName="thumbnailUrl" class="form-control" />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Expiry Date</label>
+        <input type="date" formControlName="expiryDate" class="form-control" />
+      </div>
+    </div>
+
+    <!-- Course Contents Card -->
+    <div class="course-contents-card mb-4">
+      <h4 class="fw-bold mb-3">Course Contents</h4>
+      <div formArrayName="contents">
+        <div *ngFor="let content of contentsControls; let i = index" [formGroupName]="i"
+             class="content-item mb-3 border rounded p-3 shadow-sm">
+
+          <div class="mb-2">
+            <label class="form-label fw-bold">Content Title</label>
+            <input type="text" formControlName="title" class="form-control" />
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label fw-bold">File / Video URL</label>
+            <input type="text" formControlName="fileUrl" class="form-control" />
+          </div>
+
+          <div class="mb-2">
+            <label class="form-label fw-bold">Content Type</label>
+            <select formControlName="contentType" class="form-control">
+              <option value="video">Video</option>
+              <option value="pdf">PDF</option>
+              <option value="text">Text</option>
+              <option value="image">Image</option>
+            </select>
+          </div>
+
+          <button type="button" class="btn btn-outline-danger btn-sm mt-2" (click)="removeContent(i)">
+            <i class="fa fa-trash me-1"></i> Remove
+          </button>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-outline-primary mt-2 mb-3" (click)="addNewContent()">
+        <i class="fa fa-plus me-1"></i> Add New Content
+      </button>
+    </div>
+
+    <button type="submit" class="btn btn-success">
+      <i class="fa fa-save me-1"></i> {{ isEditMode ? 'Update Course & Contents' : 'Create Course' }}
+    </button>
+  </form>
+</div>
