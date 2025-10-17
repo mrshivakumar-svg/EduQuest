@@ -94,6 +94,14 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/student/courses/${courseId}/contents/${contentId}`, { headers });
   }
 
+  getProfile(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/student/profile`, { headers: this.getAuthHeaders() });
+}
+// Get my courses
+getMyCourses(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/student/my-courses`, { headers: this.getAuthHeaders() });
+}
+
 
 // ================== Admin APIs ==================
   adminGetAllCourses(): Observable<any[]> {
