@@ -17,17 +17,46 @@ export class StudentDashboardComponent implements OnInit {
   constructor(private apiService: ApiService, private router: Router) {}
 
   ngOnInit() {
-    this.apiService.getAllCourses().subscribe({
-      next: (data) => {
-        // Filter only approved courses for students
-        this.courses = Array.isArray(data.courses) ? data.courses.filter((c:any)=>c.status.toLowerCase()==='approved') : [];
+    this.loadCourses();
+  }
 
-        this.loading = false;
+  loadCourses() {
+    this.loading = true;
+
+    // Step 1: Get all approved courses
+    this.apiService.getAllCourses().subscribe({
+      next: (courseData) => {
+        const allCourses = Array.isArray(courseData)
+          ? courseData
+          : courseData.courses || [];
+
+        // Step 2: Get student's enrollments
+        this.apiService.getMyEnrollments().subscribe({
+          next: (enrollData) => {
+            const enrolledIds = Array.isArray(enrollData)
+              ? enrollData.map((e: any) => e.courseId)
+              : (enrollData.enrollments || []).map((e: any) => e.courseId);
+
+            // Step 3: Combine both
+            this.courses = allCourses
+              .filter((c: any) => c.status?.toLowerCase() === 'approved')
+              .map((c: any) => ({
+                ...c,
+                isEnrolled: enrolledIds.includes(c.id),
+              }));
+
+            this.loading = false;
+          },
+          error: (err) => {
+            console.error('Error fetching enrollments:', err);
+            this.loading = false;
+          },
+        });
       },
       error: (err) => {
-        console.error(err);
+        console.error('Error fetching courses:', err);
         this.loading = false;
-      }
+      },
     });
   }
 
@@ -36,17 +65,26 @@ export class StudentDashboardComponent implements OnInit {
   }
 
   enrollInCourse(id: string) {
-    this.apiService.enrollInCourse(Number(id)).subscribe({
+    const course = this.courses.find((c) => c.id === Number(id));
+    if (!course) return;
 
+    course.loading = true;
+
+    this.apiService.enrollInCourse(Number(id)).subscribe({
       next: () => {
-        const course = this.courses.find(c => c.id === Number(id));
-        if (course) course.isEnrolled = true;
+        course.isEnrolled = true;
+        course.loading = false;
         alert('✅ Enrolled successfully!');
       },
       error: (err) => {
         console.error(err);
-        alert('❌ Failed to enroll.');
-      }
+        course.loading = false;
+        if (err.error?.message === 'Already enrolled in this course') {
+          course.isEnrolled = true; // reflect it instantly
+        } else {
+          alert('❌ Failed to enroll.');
+        }
+      },
     });
   }
 

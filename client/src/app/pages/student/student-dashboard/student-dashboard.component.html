@@ -42,16 +42,17 @@
           <p class="fw-bold text-secondary mb-3">${{ course.price }}</p>
 
           <button class="btn btn-outline-primary w-100 mb-2" (click)="viewCourseDetails(course.id)">
-            <i class="fa fa-eye me-1"></i> View Details
+            <i class="fa fa-eye me-1"></i> View Course
           </button>
 
           <button
-            class="btn btn-outline-success w-100"
-            (click)="enrollInCourse(course.id)"
-            [disabled]="course.isEnrolled">
-            <i class="fa fa-sign-in-alt me-1"></i>
-            {{ course.isEnrolled ? 'Enrolled' : 'Enroll Now' }}
-          </button>
+  class="btn btn-outline-success w-100"
+  (click)="enrollInCourse(course.id)"
+  [disabled]="course.isEnrolled || course.loading">
+  <i class="fa" [ngClass]="course.loading ? 'fa-spinner fa-spin' : 'fa-sign-in-alt me-1'"></i>
+  {{ course.isEnrolled ? 'Enrolled' : (course.loading ? 'Enrolling...' : 'Enroll Now') }}
+</button>
+
         </div>
       </div>
     </div>
