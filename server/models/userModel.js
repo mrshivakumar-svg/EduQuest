@@ -39,4 +39,17 @@ const User = sequelize.define(
   }
 );
 
+// Associations
+User.associate = (models) => {
+  User.hasMany(models.Course, {
+    foreignKey: "authorId",
+    as: "courses",
+  });
+
+  User.hasMany(models.Enrollment, {
+    foreignKey: "userId",
+    as: "enrollments",
+  });
+};
+
 module.exports = User;

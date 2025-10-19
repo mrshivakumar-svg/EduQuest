@@ -67,6 +67,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard],
     data: { role: 'author' }
   },
+  {
+  path: 'author/profile',
+  loadComponent: () => import('./pages/author/author-profile/author-profile.component').then(m => m.AuthorProfileComponent)
+},
+
 
   // ADMIN ROUTES
   {

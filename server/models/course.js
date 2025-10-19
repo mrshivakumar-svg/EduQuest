@@ -52,7 +52,7 @@ const Course = sequelize.define(
 Course.associate = (models) => {
   Course.belongsTo(models.User, { foreignKey: "authorId", as: "author" });
   Course.hasMany(models.CourseContent, { foreignKey: "courseId", as: "contents" });
-  Course.hasMany(models.Enrollment, { foreignKey: "courseId" });
+  Course.hasMany(models.Enrollment, { foreignKey: "courseId", as: "enrollments" });
 };
 
 module.exports = Course;

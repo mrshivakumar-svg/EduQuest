@@ -52,6 +52,12 @@ export class ApiService {
       headers: this.getAuthHeaders()
     });
   }
+  getAuthorProfile(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/author/profile`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
   // ================== Student APIs (UNCHANGED) ==================
   getAllCourses(): Observable<any> {
     const token = localStorage.getItem('token');

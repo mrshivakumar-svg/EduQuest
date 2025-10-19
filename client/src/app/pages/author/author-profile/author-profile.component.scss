@@ -1,0 +1,24 @@
+.author-profile {
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff, #6610f2);
+  }
+
+  .card {
+    border-radius: 1.5rem;
+  }
+
+  table {
+    th {
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    td {
+      vertical-align: middle;
+    }
+
+    .badge {
+      font-size: 0.9rem;
+    }
+  }
+}

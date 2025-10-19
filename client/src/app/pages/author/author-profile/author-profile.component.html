@@ -1,0 +1,55 @@
+<div class="author-profile container py-5">
+  <!-- Profile Header -->
+  <div class="profile-header bg-gradient-primary text-white rounded-4 p-4 shadow-sm mb-5">
+    <div class="d-flex align-items-center justify-content-between">
+      <div>
+        <h2 class="fw-bold mb-1">
+          <i class="fa fa-user-circle me-2"></i> {{ author?.name }}
+        </h2>
+        <p class="mb-0">
+          <i class="fa fa-envelope me-2"></i> {{ author?.email }}
+        </p>
+      </div>
+      <button class="btn btn-light fw-semibold" (click)="goBack()">
+        <i class="fa fa-arrow-left me-2"></i> Back to Dashboard
+      </button>
+    </div>
+  </div>
+
+  <!-- Course Enrollment Table -->
+  <div class="card border-0 shadow-lg rounded-4">
+    <div class="card-body p-4">
+      <h4 class="fw-bold text-primary mb-4">
+        <i class="fa fa-book me-2"></i> Your Courses & Enrollments
+      </h4>
+
+      <div *ngIf="author?.courses?.length === 0" class="text-center text-muted py-5">
+        <i class="fa fa-folder-open fa-3x mb-3"></i>
+        <p class="lead">You haven't created any courses yet.</p>
+      </div>
+
+      <div *ngIf="author?.courses?.length > 0" class="table-responsive">
+        <table class="table align-middle table-hover">
+          <thead class="table-primary">
+            <tr>
+              <th scope="col">Sl No</th>
+              <th scope="col">Course Title</th>
+              <th scope="col">Enrollments</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let course of author.courses; let i = index">
+              <td>{{ i + 1 }}</td>
+              <td>{{ course.title }}</td>
+              <td>
+                <span class="badge bg-success px-3 py-2">
+                  {{ course.enrollments }} students
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

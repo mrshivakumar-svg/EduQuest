@@ -29,33 +29,93 @@ const createCourse = async (req, res) => {
     }
 };
 
+const getAuthorProfile = async (req, res) => {
+  try {
+    // Fetch author details with their courses
+    const author = await User.findByPk(req.user.id, {
+      attributes: ["id", "name", "email"],
+      include: [
+        {
+          model: Course,
+          as: "courses", // must match association alias in User model
+          attributes: ["id", "title"],
+          include: [
+            {
+              model: Enrollment,
+              as: "enrollments", // must match alias in Course model
+              attributes: [],
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!author) {
+      return res.status(404).json({ message: "Author not found" });
+    }
+
+    // Count enrollments for each course
+    const coursesWithCounts = await Promise.all(
+      author.courses.map(async (course) => {
+        const enrollmentsCount = await Enrollment.count({
+          where: { courseId: course.id },
+        });
+        return {
+          id: course.id,
+          title: course.title,
+          enrollments: enrollmentsCount,
+        };
+      })
+    );
+
+    res.json({
+      id: author.id,
+      name: author.name,
+      email: author.email,
+      courses: coursesWithCounts,
+    });
+  } catch (err) {
+    console.error("Error fetching author profile:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+
 const updateCourse = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, price, expiryDate, thumbnailUrl } = req.body;
+    const { title, description, price, thumbnailUrl, expiryDate } = req.body;
 
-    const course = await Course.findOne({ where: { id, authorId: req.user.id } });
-    if (!course) return res.status(404).json({ message: "Course not found" });
-
-    let newStatus = course.status;
-    if (course.status === "approved") {
-      newStatus = "pending";
+    // Find the course
+    const course = await Course.findOne({ where: { id } });
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
     }
 
-    await course.update({
+    // Verify author ownership
+    if (course.authorId !== req.user.id) {
+      return res.status(403).json({ message: "You are not authorized to update this course" });
+    }
+
+    // ✅ Update course details but preserve approval status if already approved
+    const updatedData = {
       title,
       description,
       price,
-      expiryDate,
       thumbnailUrl,
-      status: newStatus, 
-    });
+      expiryDate,
+    };
+
+    // Only change status if it’s *not* approved
+    if (course.status !== "approved") {
+      updatedData.status = "pending";
+    }
+
+    await course.update(updatedData);
 
     res.json({
-      message:
-        newStatus === "pending"
-          ? "Course updated successfully and sent for re-approval."
-          : "Course updated successfully.",
+      message: `Course updated successfully. Status remains '${course.status}'.`,
       course,
     });
   } catch (err) {
@@ -63,6 +123,7 @@ const updateCourse = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 const addCourseContent = async (req, res) => {
   try {
@@ -109,12 +170,12 @@ const updateCourseContent = async (req, res) => {
     await content.update({ title, fileUrl, contentType });
 
     // If the parent course was approved, set it to pending again
-    if (content.Course.status === "approved") {
-      await content.Course.update({ status: "pending" });
-    }
+    // if (content.Course.status === "approved") {
+    //   await content.Course.update({ status: "pending" });
+    // }
 
     res.json({
-      message: "Content updated successfully. Course set to pending for re-approval.",
+      message: "Content updated successfully",
       content,
     });
   } catch (err) {
@@ -177,7 +238,8 @@ module.exports = {
   addCourseContent,
   getMyCourses,
   getCourseById,
-  updateCourseContent
+  updateCourseContent,
+  getAuthorProfile,
 };
 
 

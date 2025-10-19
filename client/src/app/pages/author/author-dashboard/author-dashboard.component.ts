@@ -57,10 +57,14 @@ export class AuthorDashboardComponent implements OnInit {
   }
 
   goToCreateCourse(): void {
-    this.router.navigate(['/author/create-course']);
+    this.router.navigate(['/author/courses/create']);
   }
 
   uploadContent(courseId: number): void {
     this.router.navigate(['/author/create/course', courseId]);
   }
+  goToProfile(): void {
+  this.router.navigate(['/author/profile']);
+}
+
 }

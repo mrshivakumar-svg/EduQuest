@@ -117,7 +117,7 @@ export class CreateCourseComponent implements OnInit {
               this.api.addCourseContent(Number(this.courseId), c).subscribe();
             }
           });
-          window.alert('Course and contents updated successfully! Pending admin approval.');
+          window.alert('Course and contents updated successfully!');
           this.router.navigate(['/author/dashboard']);
         },
         error: err => console.error(err)

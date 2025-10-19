@@ -17,4 +17,7 @@ router.get("/courses/:id", authorController.getCourseById);
 router.post("/courses/:courseId/contents", authorController.addCourseContent);
 router.put("/contents/:contentId", authorController.updateCourseContent);
 
+// profile route
+router.get("/profile", authMiddleware(), authorController.getAuthorProfile);
+
 module.exports = router;
