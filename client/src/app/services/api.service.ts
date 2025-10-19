@@ -76,10 +76,10 @@ export class ApiService {
     return this.http.get(`${this.apiUrl}/student/courses/${id}`, { headers });
   }
   enrollInCourse(id: number): Observable<any> {
-    const token = localStorage.getItem('token');
+  const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders({
       Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     });
     return this.http.post(`${this.apiUrl}/student/courses/${id}/enroll`, {}, { headers });
   }

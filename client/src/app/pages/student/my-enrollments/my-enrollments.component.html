@@ -1,23 +1,21 @@
 <div class="my-enrollments container py-5">
+  <!-- Header -->
   <div class="dashboard-header d-flex justify-content-between align-items-center mb-5">
     <h2 class="fw-bold text-primary m-0">
       <i class="fa fa-book me-2"></i> My Enrollments
     </h2>
   </div>
-
   <!-- Loading -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-primary mb-3" role="status"></div>
     <p class="fw-semibold text-muted">Loading your enrolled courses...</p>
   </div>
-
-  <!-- Empty -->
+  <!-- Empty State -->
   <div *ngIf="!loading && enrollments.length === 0" class="empty-state text-center py-5">
     <i class="fa fa-folder-open fa-4x text-muted mb-3"></i>
     <p class="lead text-muted">You haven’t enrolled in any courses yet.</p>
   </div>
-
-  <!-- Enrolled Courses -->
+  <!-- Enrolled Courses List -->
   <div *ngIf="!loading && enrollments.length > 0" class="row g-4">
     <div class="col-md-4" *ngFor="let e of enrollments">
       <div class="card shadow-sm border-0 rounded-4 h-100 course-card">
@@ -27,17 +25,23 @@
             class="card-img-top"
             alt="{{ e.course.title }}"
           />
-          <!-- <span class="badge position-absolute top-0 end-0 m-2 px-3 py-2 bg-success">
-            APPROVED
-          </span> -->
+          <span
+            class="badge position-absolute top-0 end-0 m-2 px-3 py-2"
+            [ngClass]="{
+              'bg-success': e.course.status === 'approved',
+              'bg-warning text-dark': e.course.status === 'pending',
+              'bg-danger': e.course.status === 'rejected'
+            }">
+            {{ e.course.status | uppercase }}
+          </span>
         </div>
-
         <div class="card-body d-flex flex-column">
           <h5 class="card-title text-primary">{{ e.course.title }}</h5>
           <p class="card-text text-muted flex-grow-1">{{ e.course.description }}</p>
           <p class="fw-bold text-secondary mb-3">${{ e.course.price }}</p>
-
-          <button class="btn btn-outline-primary w-100" (click)="viewCourseDetails(e.course.id)">
+          <button
+            class="btn btn-outline-primary w-100"
+            (click)="viewCourseDetails(e.course.id)">
             <i class="fa fa-eye me-1"></i> View Course
           </button>
         </div>
