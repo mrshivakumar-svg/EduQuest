@@ -69,7 +69,9 @@ export const routes: Routes = [
   },
   {
   path: 'author/profile',
-  loadComponent: () => import('./pages/author/author-profile/author-profile.component').then(m => m.AuthorProfileComponent)
+  loadComponent: () => import('./pages/author/author-profile/author-profile.component').then(m => m.AuthorProfileComponent),
+  canActivate: [AuthGuard],
+  data: { role: 'author' }
 },
 
 
