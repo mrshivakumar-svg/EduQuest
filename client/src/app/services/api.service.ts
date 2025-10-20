@@ -101,11 +101,21 @@ export class ApiService {
   }
 
   getProfile(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/student/profile`, { headers: this.getAuthHeaders() });
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  return this.http.get(`${this.apiUrl}/student/profile`, { headers });
 }
 // Get my courses
 getMyCourses(): Observable<any> {
-  return this.http.get(`${this.apiUrl}/student/my-courses`, { headers: this.getAuthHeaders() });
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+  return this.http.get(`${this.apiUrl}/student/my-courses`, { headers });
 }
 
 

@@ -159,11 +159,17 @@ exports.getMyCourses = async (req, res) => {
     const userId = req.user.id;
     const enrollments = await Enrollment.findAll({
       where: { userId },
-      include: [{ model: Course, attributes: ["id","title","description","thumbnailUrl","price"] }],
+      include: [{
+        model: Course,
+        as: "course", // must match alias in model
+        attributes: ["id", "title", "description", "thumbnailUrl", "price"]
+      }],
     });
-    const courses = enrollments.map(e => e.Course);
+    const courses = enrollments.map(e => e.course);
     res.json({ total: courses.length, courses });
   } catch (err) {
+    console.error("Error fetching my courses:", err);
     res.status(500).json({ message: "Error fetching my courses", error: err.message });
   }
 };
+
