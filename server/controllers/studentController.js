@@ -173,3 +173,29 @@ exports.getMyCourses = async (req, res) => {
   }
 };
 
+// PUBLIC: Fetch only approved courses (no user context)
+exports.getPublicCourses = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6;
+    const offset = (page - 1) * limit;
+
+    const { count, rows } = await Course.findAndCountAll({
+      where: { status: "approved" },
+      limit,
+      offset,
+      order: [["createdAt", "DESC"]],
+    });
+
+    res.status(200).json({
+      page,
+      total: count,
+      courses: rows,
+    });
+  } catch (error) {
+    console.error("Error in getPublicCourses:", error);
+    res.status(500).json({ message: "Error fetching public courses", error: error.message });
+  }
+};
+
+

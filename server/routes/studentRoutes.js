@@ -19,5 +19,8 @@ router.get("/profile", studentController.getProfile);
 
 // NEW ROUTE: Get my courses (same as enrollments but simplified for frontend)
 router.get("/my-courses", studentController.getMyCourses);
+// studentRoutes.js
+router.get('/public-courses', studentController.getPublicCourses);
+
 
 module.exports = router;

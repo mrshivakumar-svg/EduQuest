@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+
 
 @Component({
   selector: 'app-login',
@@ -15,20 +17,28 @@ export class LoginComponent {
   loginForm: FormGroup;
   message = '';
 
-  constructor(private fb: FormBuilder, private api: ApiService, private router: Router) {
+  constructor(private fb: FormBuilder, private api: ApiService, private router: Router,private route: ActivatedRoute) {
     this.loginForm = this.fb.group({
       email: [''],
       password: [''],
     });
   }
+onLogin() {
+  this.api.loginUser(this.loginForm.value).subscribe({
+    next: (res) => {
+      // ✅ store token and user info
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('role', res.user.role);
+      localStorage.setItem('user', JSON.stringify(res.user));
 
-  onLogin() {
-    this.api.loginUser(this.loginForm.value).subscribe({
-      next: (res) => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('role', res.user.role);
-        localStorage.setItem('user', JSON.stringify(res.user));
+      // ✅ get optional redirectTo query param
+      const redirectUrl = this.route.snapshot.queryParamMap.get('redirectTo');
 
+      if (redirectUrl) {
+        // if redirectTo exists (example: /courses/4), go there
+        this.router.navigateByUrl(redirectUrl);
+      } else {
+        // otherwise default dashboard redirection
         if (res.user.role === 'admin') {
           this.router.navigate(['/admin/dashboard']);
         } else if (res.user.role === 'author') {
@@ -36,10 +46,12 @@ export class LoginComponent {
         } else {
           this.router.navigate(['/student/dashboard']);
         }
-      },
-      error: (err) => {
-        this.message = err.error.message || 'Login failed';
-      },
-    });
-  }
+      }
+    },
+    error: (err) => {
+      this.message = err.error?.message || 'Login failed';
+    },
+  });
+}
+
 }

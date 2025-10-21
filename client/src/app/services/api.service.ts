@@ -117,6 +117,10 @@ getMyCourses(): Observable<any> {
   });
   return this.http.get(`${this.apiUrl}/student/my-courses`, { headers });
 }
+getPublicCourses(page = 1, limit = 6): Observable<any> {
+  return this.http.get(`${this.apiUrl}/public/courses?page=${page}&limit=${limit}`);
+}
+
 
 
 // ================== Admin APIs ==================
