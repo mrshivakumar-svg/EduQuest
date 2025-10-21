@@ -1,15 +1,14 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../services/api.service';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
-
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],  // ✅ added RouterLink
+  imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -17,41 +16,36 @@ export class LoginComponent {
   loginForm: FormGroup;
   message = '';
 
-  constructor(private fb: FormBuilder, private api: ApiService, private router: Router,private route: ActivatedRoute) {
+  constructor(
+    private fb: FormBuilder,
+    private api: ApiService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private authService: AuthService
+  ) {
     this.loginForm = this.fb.group({
       email: [''],
       password: [''],
     });
   }
-onLogin() {
-  this.api.loginUser(this.loginForm.value).subscribe({
-    next: (res) => {
-      // ✅ store token and user info
-      localStorage.setItem('token', res.token);
-      localStorage.setItem('role', res.user.role);
-      localStorage.setItem('user', JSON.stringify(res.user));
 
-      // ✅ get optional redirectTo query param
-      const redirectUrl = this.route.snapshot.queryParamMap.get('redirectTo');
+  onLogin() {
+    this.api.loginUser(this.loginForm.value).subscribe({
+      next: (res) => {
+        this.authService.login(res.token, res.user.role);
 
-      if (redirectUrl) {
-        // if redirectTo exists (example: /courses/4), go there
-        this.router.navigateByUrl(redirectUrl);
-      } else {
-        // otherwise default dashboard redirection
-        if (res.user.role === 'admin') {
-          this.router.navigate(['/admin/dashboard']);
-        } else if (res.user.role === 'author') {
-          this.router.navigate(['/author/dashboard']);
+        const redirectUrl = this.route.snapshot.queryParamMap.get('redirectTo');
+        if (redirectUrl) {
+          this.router.navigateByUrl(redirectUrl);
         } else {
-          this.router.navigate(['/student/dashboard']);
+          if (res.user.role === 'student') this.router.navigate(['/student/dashboard']);
+          else if (res.user.role === 'author') this.router.navigate(['/author/dashboard']);
+          else this.router.navigate(['/admin/dashboard']);
         }
-      }
-    },
-    error: (err) => {
-      this.message = err.error?.message || 'Login failed';
-    },
-  });
-}
-
+      },
+      error: (err) => {
+        this.message = err.error?.message || 'Login failed';
+      },
+    });
+  }
 }

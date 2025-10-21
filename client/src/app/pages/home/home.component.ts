@@ -2,13 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.scss']
+  styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
   courses: any[] = [];
@@ -18,18 +19,16 @@ export class HomeComponent implements OnInit {
   isLoggedIn = false;
   role: string | null = null;
 
-  constructor(private api: ApiService, private router: Router) {}
+  constructor(
+    private api: ApiService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
-    this.checkLoginStatus();
     this.loadCourses();
-  }
-
-  checkLoginStatus() {
-    const token = localStorage.getItem('token');
-    const role = localStorage.getItem('role');
-    this.isLoggedIn = !!token;
-    this.role = role;
+    this.authService.isLoggedIn$.subscribe((v) => (this.isLoggedIn = v));
+    this.authService.role$.subscribe((r) => (this.role = r));
   }
 
   loadCourses() {
@@ -40,10 +39,7 @@ export class HomeComponent implements OnInit {
         this.hasMore = res.hasMore;
         this.loading = false;
       },
-      error: (err) => {
-        console.error('Error fetching courses:', err);
-        this.loading = false;
-      },
+      error: () => (this.loading = false),
     });
   }
 
@@ -63,6 +59,6 @@ export class HomeComponent implements OnInit {
   }
 
   viewCourseDetails(courseId: number) {
-     this.router.navigate(['/student/course', courseId]);
+    this.router.navigate(['/student/course', courseId]);
   }
 }
