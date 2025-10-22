@@ -27,7 +27,7 @@ export const routes: Routes = [
   },
   {
     path: 'student/course/:id',
-    loadComponent: () => import('./pages/student/course-details/course-details.component')
+    loadComponent: () => import('./shared/course-details/course-details.component')
                         .then(m => m.CourseDetailsComponent),
     canActivate: [AuthGuard],
     data: { role: 'student' }
