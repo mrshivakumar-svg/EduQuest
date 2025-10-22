@@ -16,15 +16,22 @@
         <button class="btn btn-danger" (click)="logout()">Logout</button>
       </ng-container>
 
-      <!-- Dashboard Page -->
+      <!-- Student Dashboard -->
       <ng-container *ngIf="currentRoute.includes('/student/dashboard') && isLoggedIn">
         <a routerLink="/student/profile" class="btn btn-outline-primary">Profile</a>
         <a routerLink="/student/my-courses" class="btn btn-outline-primary">My Courses</a>
         <button class="btn btn-danger" (click)="logout()">Logout</button>
       </ng-container>
 
+      <!-- Author Dashboard -->
+      <ng-container *ngIf="currentRoute.includes('/author/dashboard') && isLoggedIn">
+        <a routerLink="/author/profile" class="btn btn-outline-primary">Profile</a>
+        <a routerLink="/author/courses/create" class="btn btn-primary">Create Content</a>
+        <button class="btn btn-danger" (click)="logout()">Logout</button>
+      </ng-container>
+
       <!-- Other pages (just logout) -->
-      <ng-container *ngIf="!isLandingPage() && !isAuthPage() && !currentRoute.includes('/student/dashboard') && isLoggedIn">
+      <ng-container *ngIf="!isLandingPage() && !isAuthPage() && !currentRoute.includes('/student/dashboard') && !currentRoute.includes('/author/dashboard') && isLoggedIn">
         <button class="btn btn-danger" (click)="logout()">Logout</button>
       </ng-container>
     </div>
