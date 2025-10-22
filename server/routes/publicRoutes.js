@@ -10,20 +10,26 @@ router.get("/courses", async (req, res) => {
 
     const { count, rows } = await Course.findAndCountAll({
       where: { status: "approved" },
-      attributes: ["id", "title", "price", "thumbnailUrl", "createdAt"],
+      attributes: ["id", "title", "description", "price", "thumbnailUrl", "createdAt"],
       order: [["createdAt", "DESC"]],
       limit,
       offset,
     });
 
+    const totalPages = Math.ceil(count / limit);
+
     res.json({
       courses: rows,
       total: count,
-      hasMore: offset + limit < count,
+      totalPages,
+      currentPage: page,
+      hasMore: page < totalPages,
     });
   } catch (err) {
+    console.error("Error fetching public courses:", err);
     res.status(500).json({ message: "Error fetching public courses", error: err.message });
   }
 });
+
 
 module.exports = router;

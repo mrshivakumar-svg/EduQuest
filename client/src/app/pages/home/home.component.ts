@@ -14,8 +14,8 @@ import { AuthService } from '../../services/auth.service';
 export class HomeComponent implements OnInit {
   courses: any[] = [];
   loading = true;
-  page = 1;
-  hasMore = false;
+  currentPage = 1;
+  totalPages = 0;
   isLoggedIn = false;
   role: string | null = null;
 
@@ -26,28 +26,28 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadCourses();
+    this.loadCourses(this.currentPage);
     this.authService.isLoggedIn$.subscribe((v) => (this.isLoggedIn = v));
     this.authService.role$.subscribe((r) => (this.role = r));
   }
 
-  loadCourses() {
+  loadCourses(page: number) {
     this.loading = true;
-    this.api.getPublicCourses(this.page).subscribe({
+    this.api.getPublicCourses(page).subscribe({
       next: (res: any) => {
-        this.courses = [...this.courses, ...res.courses];
-        this.hasMore = res.hasMore;
+        this.courses = res.courses || [];
+        this.totalPages = Math.ceil(res.total / 6); // assuming limit=6
         this.loading = false;
       },
       error: () => (this.loading = false),
     });
   }
 
-  loadMore() {
-    if (this.hasMore) {
-      this.page++;
-      this.loadCourses();
-    }
+  changePage(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+    this.loadCourses(page);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   goToRegister() {
@@ -60,5 +60,9 @@ export class HomeComponent implements OnInit {
 
   viewCourseDetails(courseId: number) {
     this.router.navigate(['/student/course', courseId]);
+  }
+
+  get pages(): number[] {
+    return Array.from({ length: this.totalPages }, (_, i) => i + 1);
   }
 }

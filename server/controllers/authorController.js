@@ -186,24 +186,50 @@ const updateCourseContent = async (req, res) => {
 
 const getCourseById = async (req, res) => {
   try {
+    const { id } = req.params;
+
+    // ✅ Allow both authors (checking authorId) and students (no author restriction)
+    const whereCondition = req.user.role === "author" 
+      ? { id, authorId: req.user.id }
+      : { id }; // students just fetch approved courses
+
     const course = await Course.findOne({
-      where: { id: req.params.id, authorId: req.user.id },
+      where: whereCondition,
       include: [
         {
           model: CourseContent,
           as: "contents",
+          attributes: ["id", "title", "fileUrl", "contentType"],
         },
+        {
+          model: User,
+          as: "author",
+          attributes: ["id", "name", "email"],
+        },
+      ],
+      attributes: [
+        "id",
+        "title",
+        "description",
+        "price",
+        "status",
+        "thumbnailUrl",
+        "expiryDate",
+        "createdAt"
       ],
     });
 
-    if (!course) return res.status(404).json({ message: "Course not found" });
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
 
-    res.json({ course }); // wrap course inside an object for consistency
+    res.json({ course });
   } catch (err) {
     console.error("Error fetching course:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 const getMyCourses = async (req, res) => {
   try {

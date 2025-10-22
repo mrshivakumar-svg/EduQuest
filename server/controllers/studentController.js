@@ -70,6 +70,7 @@ exports.getCourseDetails = async (req, res) => {
       id: course.id,
       title: course.title,
       description: course.description,
+      thumbnailUrl: course.thumbnailUrl,
       price: course.price,
       status: course.status,
       isEnrolled,
