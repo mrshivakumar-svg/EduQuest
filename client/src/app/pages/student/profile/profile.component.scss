@@ -1,0 +1,160 @@
+// Use a variable for easier theme changes
+$primary-color: #0d6efd;
+
+// --- New Layout Containers ---
+.profile-page-container {
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+h2 {
+  font-weight: 700;
+}
+
+// Header for title and buttons
+// .profile-header {
+  // Styles are handled by utility classes (mb-3, pb-3, border-bottom)
+// }
+
+// Banner for avatar, name, email
+// .profile-banner {
+  // Styles handled by utility classes (bg-white, p-4, rounded, shadow-sm, etc)
+// }
+
+// Section for the details list
+.profile-details {
+  .list-group-item {
+    background-color: transparent; // Blend with the .profile-details bg
+    padding-left: 0;
+    padding-right: 0;
+
+    &:first-child {
+      border-top: none;
+    }
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+// --- Buttons ---
+.btn-outline-primary, .btn-primary, .btn-outline-secondary {
+  border-radius: 50px;
+  padding: 4px 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.btn-primary.btn-sm {
+  padding: 5px 12px;
+}
+
+// --- Profile Avatar (Updated) ---
+.profile-avatar-wrapper {
+  width: 120px;
+  position: relative;
+}
+
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+
+  // Replaced static background with dynamic classes
+  color: #fff; // Text color for the initial
+  font-weight: 600;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  // --- NEW: Initial Style ---
+  .profile-initial {
+    font-size: 3.5rem; // Large initial
+    line-height: 1;
+  }
+
+  // --- NEW: Dynamic Background Colors ---
+  &.avatar-bg-1 { background-color: #0d6efd; } // Primary
+  &.avatar-bg-2 { background-color: #6f42c1; } // Indigo
+  &.avatar-bg-3 { background-color: #d63384; } // Pink
+  &.avatar-bg-4 { background-color: #fd7e14; } // Orange
+  &.avatar-bg-5 { background-color: #198754; } // Green
+
+  // --- Avatar Upload Overlay (Unchanged) ---
+  .avatar-upload-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(33, 37, 41, 0.7); // Darker overlay
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &.editable {
+    cursor: pointer;
+    &:hover {
+      .avatar-upload-overlay {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// --- User Info (Unchanged) ---
+.profile-name {
+  font-weight: 600;
+  color: #343a40;
+}
+.profile-email {
+  font-size: 1rem;
+}
+.profile-name-input {
+  font-weight: 600;
+  color: #343a40;
+  border: 2px solid $primary-color;
+  box-shadow: none;
+  &:focus {
+    border-color: $primary-color;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+}
+
+// --- Details List (Styles moved to .profile-details) ---
+// .profile-details-list {
+  // This class is now .profile-details
+// }
+
+// Styles for the list items themselves
+.profile-icon {
+  width: 30px;
+  text-align: center;
+  margin-right: 12px;
+  font-size: 1.1rem;
+}
+
+strong {
+  color: #495057;
+  font-weight: 600;
+}
+
+span.text-secondary {
+  font-weight: 500;
+}

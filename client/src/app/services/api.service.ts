@@ -124,6 +124,11 @@ getMyCourses(): Observable<any> {
 getPublicCourses(page = 1, limit = 6): Observable<any> {
   return this.http.get(`${this.apiUrl}/public/courses?page=${page}&limit=${limit}`);
 }
+updateProfile(data: any): Observable<any> {
+  const headers = this.getAuthHeaders();
+  return this.http.put(`${this.apiUrl}/student/profile`, data, { headers });
+}
+
 
 
 
