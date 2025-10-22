@@ -54,7 +54,10 @@
         <div class="card-body d-flex flex-column">
           <h5 class="card-title text-primary">{{ course.title }}</h5>
           <p class="card-text text-muted flex-grow-1">{{ course.description }}</p>
-          <p class="fw-bold text-secondary mb-3">${{ course.price }}</p>
+          <p class="fw-bold text-secondary mb-3"> ${{ course.price }}
+            <span class="ms-2 text-muted">({{ course.enrollmentsCount }} enrolled)</span>
+          </p>
+
 
           <!-- Pending or Approved courses can be edited -->
           <button

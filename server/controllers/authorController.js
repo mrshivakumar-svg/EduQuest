@@ -233,12 +233,6 @@ const getCourseById = async (req, res) => {
 
 const getMyCourses = async (req, res) => {
   try {
-    // Ensure the user is authenticated
-    if (!req.user || !req.user.id) {
-      return res.status(401).json({ message: "Unauthorized: No user found" });
-    }
-
-    console.log("🔑 Logged-in user:", req.user);
     const courses = await Course.findAll({
       where: { authorId: req.user.id },
       include: [
@@ -246,17 +240,32 @@ const getMyCourses = async (req, res) => {
           model: CourseContent,
           as: "contents",
         },
+        {
+          model: Enrollment,
+          as: "enrollments",
+          attributes: ["id"], // minimal attributes
+        },
       ],
     });
 
-    console.log("📚 Courses fetched:", courses.length);
+    // Map courses to include enrollments count
+    const coursesWithEnrollments = courses.map(course => ({
+      id: course.id,
+      title: course.title,
+      description: course.description,
+      price: course.price,
+      status: course.status,
+      thumbnailUrl: course.thumbnailUrl,
+      enrollmentsCount: course.enrollments.length,
+    }));
 
-    res.json({ courses });
+    res.json({ courses: coursesWithEnrollments });
   } catch (err) {
-    console.error("❌ Error fetching author's courses:", err);
+    console.error("Error fetching courses:", err);
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
 
 module.exports = {
   createCourse,

@@ -57,6 +57,10 @@ export class ApiService {
     headers: this.getAuthHeaders()
   });
 }
+getCourseByIdForAuthor(id: number | string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/author/courses/${id}`, { headers: this.getAuthHeaders() });
+}
+
 
   // ================== Student APIs (UNCHANGED) ==================
   getAllCourses(): Observable<any> {
