@@ -186,6 +186,15 @@ exports.getPublicCourses = async (req, res) => {
       limit,
       offset,
       order: [["createdAt", "DESC"]],
+      attributes: [
+        "id",
+        "title",
+        "description", // ✅ add this line
+        "price",
+        "thumbnailUrl",
+        "expiryDate",
+        "createdAt"
+      ],
     });
 
     res.status(200).json({
@@ -198,5 +207,6 @@ exports.getPublicCourses = async (req, res) => {
     res.status(500).json({ message: "Error fetching public courses", error: error.message });
   }
 };
+
 
 
