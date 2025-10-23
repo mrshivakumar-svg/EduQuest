@@ -55,6 +55,50 @@
       }
     }
   }
+  /* Styling for the dropdown container (optional but good for spacing) */
+.d-flex.justify-content-end.mb-4 {
+    margin-bottom: 1.5rem !important; /* Ensures bottom margin is applied */
+}
+
+/* Base style for the dropdown */
+.form-select.w-auto {
+    /* Main container and text */
+    background-color: #ffffff; /* White background */
+    color: #004085; /* Dark blue text color */
+    border: 1px solid #cce5ff; /* Light blue border */
+    border-radius: 0.25rem; /* Slightly rounded corners */
+    padding: 0.375rem 2.25rem 0.375rem 0.75rem; /* Standard select padding */
+    font-size: 1rem;
+    line-height: 1.5;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075); /* Subtle shadow for depth */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    -webkit-appearance: none; /* Hide default arrow in webkit browsers */
+    -moz-appearance: none;    /* Hide default arrow in firefox */
+    appearance: none;         /* Hide default arrow */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23004085' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e"); /* Custom blue arrow */
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0.65em auto;
+}
+
+/* Focus state (when the user clicks or tabs to it) */
+.form-select.w-auto:focus {
+    border-color: #80bdff; /* Brighter blue focus border */
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(0, 64, 133, 0.25); /* Light blue focus glow */
+}
+
+/* Hover state */
+.form-select.w-auto:hover {
+    border-color: #007bff; /* Primary blue on hover */
+    cursor: pointer;
+}
+
+/* Styling for the options inside the dropdown (Less common but for consistency) */
+.form-select.w-auto option {
+    background-color: #ffffff; /* White background for options */
+    color: #004085; /* Dark blue text for options */
+}
 
   .course-card {
     overflow: hidden;

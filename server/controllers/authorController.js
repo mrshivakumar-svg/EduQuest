@@ -257,6 +257,7 @@ const getMyCourses = async (req, res) => {
       status: course.status,
       thumbnailUrl: course.thumbnailUrl,
       enrollmentsCount: course.enrollments.length,
+      createdAt: course.createdAt,
     }));
 
     res.json({ courses: coursesWithEnrollments });
