@@ -4,15 +4,15 @@
     <h2 class="fw-bold text-primary m-0">
       <i class="fa fa-chalkboard-teacher me-2"></i> Author Dashboard
     </h2>
-  </div>
-
-  <!-- Filter Dropdown -->
-  <div class="d-flex justify-content-end mb-4">
+   <!-- Filter Dropdown -->
+    <div class="d-flex justify-content-end mb-4">
     <select class="form-select w-auto" (change)="onSortChange($event)">
   <option value="enrollments">Most Enrollments</option>
   <option value="recent">Recently Added</option>
 </select>
   </div>
+  </div>
+  
 
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-section text-center py-5">
