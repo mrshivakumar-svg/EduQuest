@@ -33,7 +33,7 @@ const getAuthorProfile = async (req, res) => {
   try {
     // Fetch author details with their courses
     const author = await User.findByPk(req.user.id, {
-      attributes: ["id", "name", "email"],
+      attributes: ["id", "name", "email", "createdAt"],
       include: [
         {
           model: Course,
@@ -64,6 +64,7 @@ const getAuthorProfile = async (req, res) => {
           id: course.id,
           title: course.title,
           enrollments: enrollmentsCount,
+          createdAt: author.createdAt
         };
       })
     );
@@ -72,6 +73,7 @@ const getAuthorProfile = async (req, res) => {
       id: author.id,
       name: author.name,
       email: author.email,
+      createdAt: author.createdAt,
       courses: coursesWithCounts,
     });
   } catch (err) {
