@@ -38,7 +38,7 @@ export class AuthorDashboardComponent implements OnInit {
         this.loading = false;
 
         // Default sort by recent
-        this.sortCourses('recent');
+        this.sortCourses('enrollments');
       },
       error: (err) => {
         console.error('Error fetching courses:', err);
@@ -54,10 +54,10 @@ export class AuthorDashboardComponent implements OnInit {
   }
 
  sortCourses(criteria: string) {
-  if (criteria === 'recent') {
-    this.courses.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  } else if (criteria === 'enrollments') {
+  if (criteria === 'enrollments') {
     this.courses.sort((a, b) => b.enrollmentsCount - a.enrollmentsCount);
+  } else if (criteria === 'recent') {
+    this.courses.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }
 }
 
