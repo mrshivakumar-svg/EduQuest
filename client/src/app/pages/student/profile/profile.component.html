@@ -1,20 +1,83 @@
-<div class="container mt-4">
-  <h2 class="text-primary mb-4">👤 My Profile</h2>
-
-  <div *ngIf="loading" class="text-center">
-    <div class="spinner-border text-primary" role="status"></div>
-    <p class="mt-2">Loading profile...</p>
-  </div>
-
-  <div *ngIf="!loading && profile">
-    <div class="card shadow-sm p-3">
-      <p><strong>Name:</strong> {{ profile.name }}</p>
-      <p><strong>Email:</strong> {{ profile.email }}</p>
-      <p><strong>Member Since:</strong> {{ profile.createdAt | date:'mediumDate' }}</p>
+<div class="container mt-4 profile-page-container">
+  
+  <div class="profile-header d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+    <h2 class="text-primary mb-0">👤 My Profile</h2>
+    
+    <div>
+      <button *ngIf="!isEditing" class="btn btn-outline-primary btn-sm" (click)="toggleEdit()">
+        <i class="fa fa-pencil-alt me-1"></i> Edit
+      </button>
+      <button *ngIf="isEditing" class="btn btn-outline-secondary btn-sm me-2" (click)="cancelEdit()">
+        Cancel
+      </button>
+      <button *ngIf="isEditing" class="btn btn-primary btn-sm" (click)="saveProfile()">
+        <i class="fa fa-save me-1"></i> Save
+      </button>
     </div>
   </div>
 
-  <div *ngIf="!loading && !profile" class="alert alert-info">
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-3 text-muted">Loading profile...</p>
+  </div>
+
+  <div *ngIf="!loading && profile" class="profile-content">
+    
+    <div class="profile-banner bg-white p-4 p-md-5 rounded shadow-sm text-center mb-4">
+      
+      <div class="profile-avatar-wrapper mx-auto">
+        <div class="profile-avatar"
+             [ngClass]="getAvatarColorClass(profile.name)"
+             [class.editable]="isEditing" 
+             (click)="isEditing && triggerFileInput()">
+          
+          <img *ngIf="profileImageUrl" [src]="profileImageUrl" alt="Profile Preview">
+          
+          <img *ngIf="!profileImageUrl && profile.avatarUrl" [src]="profile.avatarUrl" alt="Profile Picture">
+          
+          <span *ngIf="!profileImageUrl && !profile.avatarUrl" class="profile-initial">
+            {{ getInitial(profile.name) }}
+          </span>
+
+          <div *ngIf="isEditing" class="avatar-upload-overlay">
+            <i class="fa fa-camera fa-2x"></i>
+            <span class="d-block small">Change</span>
+          </div>
+        </div>
+        
+        <input type="file" class="d-none" #fileInput (change)="onFileSelected($event)" accept="image/png, image/jpeg">
+      </div>
+
+      <h3 *ngIf="!isEditing" class="profile-name mb-1 mt-3">{{ profile.name }}</h3>
+      
+      <div *ngIf="isEditing" class="mt-3 px-md-5">
+        <input type="text" 
+               class="form-control form-control-lg text-center profile-name-input" 
+               [(ngModel)]="profile.name"
+               placeholder="Enter your name">
+      </div>
+
+      <p class="profile-email text-muted mb-0">{{ profile.email }}</p>
+    </div>
+
+    <div class="profile-details bg-white p-3 p-md-4 rounded shadow-sm">
+      <ul class="list-group list-group-flush">
+        <li class="list-group-item d-flex align-items-center">
+          <i class="fa fa-calendar-alt profile-icon text-primary"></i>
+          <strong>Member Since:</strong>
+          <span class="text-secondary ms-auto">{{ profile.createdAt | date:'mediumDate' }}</span>
+        </li>
+        <li class="list-group-item d-flex align-items-center">
+          <i class="fa fa-book-open profile-icon text-primary"></i>
+          <strong>Courses Enrolled:</strong>
+          <span class="text-secondary ms-auto">{{ coursesCount }}</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !profile" class="alert alert-info mt-4 text-center">
     Profile information not available.
   </div>
+
 </div>

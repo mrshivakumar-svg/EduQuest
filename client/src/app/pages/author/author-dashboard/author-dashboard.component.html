@@ -1,22 +1,18 @@
 <div class="author-dashboard container py-5">
   <!-- Header Section -->
-  <div class="dashboard-header d-flex justify-content-between align-items-center mb-5">
+  <div class="dashboard-header d-flex justify-content-between align-items-center mb-3">
     <h2 class="fw-bold text-primary m-0">
       <i class="fa fa-chalkboard-teacher me-2"></i> Author Dashboard
     </h2>
-
-    <!-- <div class="d-flex gap-3">
-      
-      <button class="btn btn-outline-primary" (click)="goToProfile()">
-        <i class="fa fa-user me-2"></i> Profile
-      </button>
-
-      
-      <button class="btn btn-gradient" (click)="goToCreateCourse()">
-        <i class="fa fa-plus me-2"></i> Create New Course
-      </button>
-    </div> -->
+   <!-- Filter Dropdown -->
+    <div class="d-flex justify-content-end mb-4">
+    <select class="form-select w-auto" (change)="onSortChange($event)">
+  <option value="enrollments">Most Enrollments</option>
+  <option value="recent">Recently Added</option>
+</select>
   </div>
+  </div>
+  
 
   <!-- Loading State -->
   <div *ngIf="loading" class="loading-section text-center py-5">
@@ -57,7 +53,6 @@
           <p class="fw-bold text-secondary mb-3"> ${{ course.price }}
             <span class="ms-2 text-muted">({{ course.enrollmentsCount }} enrolled)</span>
           </p>
-
 
           <!-- Pending or Approved courses can be edited -->
           <button

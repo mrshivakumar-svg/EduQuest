@@ -19,13 +19,12 @@ export class AuthorDashboardComponent implements OnInit {
   constructor(private api: ApiService, private router: Router) {}
 
   ngOnInit(): void {
-    // Only access localStorage if window is defined (client-side)
     if (typeof window === 'undefined') return;
 
     const token = localStorage.getItem('token');
     if (!token) {
       console.warn('⚠️ No token found. Redirecting to login.');
-      this.router.navigate(['/login']); // redirect if not logged in
+      this.router.navigate(['/login']);
       return;
     }
 
@@ -35,9 +34,11 @@ export class AuthorDashboardComponent implements OnInit {
   fetchCourses(): void {
     this.api.getAuthorCourses().subscribe({
       next: (res: any) => {
-        console.log('Courses fetched from frontend:', res);
         this.courses = res.courses || [];
         this.loading = false;
+
+        // Default sort by recent
+        this.sortCourses('enrollments');
       },
       error: (err) => {
         console.error('Error fetching courses:', err);
@@ -52,6 +53,23 @@ export class AuthorDashboardComponent implements OnInit {
     });
   }
 
+ sortCourses(criteria: string) {
+  if (criteria === 'enrollments') {
+    this.courses.sort((a, b) => b.enrollmentsCount - a.enrollmentsCount);
+  } else if (criteria === 'recent') {
+    this.courses.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  }
+}
+
+
+  onSortChange(event: Event) {
+  const value = (event.target as HTMLSelectElement)?.value; // safely cast
+  if (value) {
+    this.sortCourses(value);
+  }
+}
+
+
   editCourse(courseId: string): void {
     this.router.navigate(['/author/create-course', courseId]);
   }
@@ -63,8 +81,8 @@ export class AuthorDashboardComponent implements OnInit {
   uploadContent(courseId: number): void {
     this.router.navigate(['/author/create/course', courseId]);
   }
-  goToProfile(): void {
-  this.router.navigate(['/author/profile']);
-}
 
+  goToProfile(): void {
+    this.router.navigate(['/author/profile']);
+  }
 }
