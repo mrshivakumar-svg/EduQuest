@@ -1,8 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const { getCourseContentUnified } = require('../controllers/studentController'); 
 
 // Import the entire controller object
 const adminController = require('../controllers/adminController');
+
 
 // ✅ CORRECTED: Import both middleware functions from the object
 const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
@@ -28,7 +30,7 @@ router.get('/courses/:id/enrollments', adminController.getCourseEnrollments);
 router.get('/students', adminController.getAllStudents);
 router.delete('/students/:id', adminController.deleteStudent);
 router.get('/students/:id/enrollments', adminController.getStudentEnrollments);
-
+router.get('/courses/:courseId/contents/:contentId', authMiddleware, getCourseContentUnified);
 
 module.exports = router;
 

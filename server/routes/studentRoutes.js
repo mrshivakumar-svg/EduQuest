@@ -10,7 +10,7 @@ const {
   getCourseDetails,
   enrollInCourse,
   getMyEnrollments,
-  getCourseContent,
+  getCourseContentUnified,
   unenrollFromCourse,
   getProfile, // Assuming studentController exports this
   getMyCourses, // Assuming studentController exports this
@@ -37,7 +37,7 @@ router.post('/courses/:id/enroll', authMiddleware, roleMiddleware('student'), en
 router.get('/my-enrollments', authMiddleware, roleMiddleware('student'), getMyEnrollments);
 
 // Access specific course content (requires login)
-router.get('/courses/:courseId/contents/:contentId', authMiddleware, roleMiddleware('student'), getCourseContent);
+router.get('/courses/:courseId/contents/:contentId', authMiddleware, getCourseContentUnified);
 
 // Unenroll from a course (requires login)
 router.delete('/courses/:id/unenroll', authMiddleware, roleMiddleware('student'), unenrollFromCourse);

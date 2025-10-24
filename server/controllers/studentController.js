@@ -117,19 +117,31 @@ exports.getMyEnrollments = async (req, res) => {
   }
 };
 // Access course content
-exports.getCourseContent = async (req, res) => {
+exports.getCourseContentUnified = async (req, res) => {
   try {
     const { courseId, contentId } = req.params;
     const userId = req.user.id;
+    const role = req.user.role;
+
+    if (role === 'admin') {
+      const content = await CourseContent.findOne({ where: { id: contentId, courseId } });
+      if (!content) return res.status(404).json({ message: "Content not found" });
+      return res.json(content);
+    }
+
     const enrollment = await Enrollment.findOne({ where: { userId, courseId } });
     if (!enrollment) return res.status(403).json({ message: "Access denied" });
+
     const content = await CourseContent.findOne({ where: { id: contentId, courseId } });
     if (!content) return res.status(404).json({ message: "Content not found" });
+
     res.json(content);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Error fetching content", error: err.message });
   }
 };
+
 // Unenroll
 exports.unenrollFromCourse = async (req, res) => {
   try {
