@@ -1,0 +1,64 @@
+// Imports all the table and button styles from the main dashboard
+@use '../admin-dashboard/admin-dashboard.component.scss';
+
+// Ensure styles apply correctly using @extend
+// Make sure these classes exist in the imported dashboard SCSS file
+table { @extend table; }
+.actions .btn { @extend .btn; }
+.actions .view-btn { @extend .view-btn; } // Ensure .view-btn style exists
+.actions .delete-btn { @extend .delete-btn; }
+.empty-placeholder { @extend .empty-placeholder; }
+
+// ✅ Styles specific to the modal popup
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; // Ensures it's on top
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px; // Limit modal width
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+  h3 {
+    margin-top: 0;
+    color: #333; // Use a standard dark color
+  }
+
+  ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    max-height: 200px; // Add scroll if list is long
+    overflow-y: auto;
+  }
+}
+
+.close-btn { // Style for the 'X' button
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #aaa;
+  &:hover {
+    color: #333;
+  }
+}
+

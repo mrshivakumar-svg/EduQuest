@@ -1,23 +1,31 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
-const authorController = require("../controllers/authorController");
-const roleMiddleware = require("../middleware/roleMiddleware");
 
-// ✅ Must CALL the middleware
-router.use(authMiddleware());
+// ✅ UPDATED: Import both middleware functions correctly
+const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
 
-// course routes
-router.post("/courses", authorController.createCourse);
-router.put("/courses/:id", authorController.updateCourse);
-router.get("/courses", authorController.getMyCourses);
-router.get("/courses/:id", authorController.getCourseById);
+// Import controller functions (assuming your authorController exports these)
+// Make sure your authorController.js exports all these functions
+const authorController = require('../controllers/authorController');
 
-// content routes
-router.post("/courses/:courseId/contents", authorController.addCourseContent);
-router.put("/contents/:contentId", authorController.updateCourseContent);
+// ✅ CORRECTED: Apply both middleware functions correctly
+// This protects all routes defined after this line in this file
+router.use(authMiddleware, roleMiddleware('author'));
 
-// profile route
-router.get("/profile", authMiddleware(), authorController.getAuthorProfile);
+// All routes below are now protected and require an author role
+
+// --- Course Routes ---
+router.post('/courses', authorController.createCourse);
+router.put('/courses/:id', authorController.updateCourse);
+router.get('/courses', authorController.getMyCourses); // Assuming this gets author's courses
+router.get('/courses/:id', authorController.getCourseById);
+
+// --- Content Routes ---
+router.post('/courses/:courseId/contents', authorController.addCourseContent);
+router.put('/contents/:contentId', authorController.updateCourseContent);
+
+// --- Profile Route ---
+router.get('/profile', authorController.getAuthorProfile); // Already protected by router.use above
 
 module.exports = router;
+

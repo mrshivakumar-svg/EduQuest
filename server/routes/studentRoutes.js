@@ -1,26 +1,52 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
-const studentController = require("../controllers/studentController");
 
-// Use auth middleware with role "student"
-router.use(authMiddleware("student"));
+// ✅ Import both middleware functions correctly
+const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
 
-// Routes
-router.get("/courses", studentController.getAllCourses);
-router.get("/courses/:id", studentController.getCourseDetails);
-router.post("/courses/:id/enroll", studentController.enrollInCourse);
-router.get("/my-enrollments", studentController.getMyEnrollments);
-router.get("/courses/:courseId/contents/:contentId", studentController.getCourseContent);
-router.delete("/courses/:id/unenroll", studentController.unenrollFromCourse);
+// ✅ Import all necessary controller functions
+const {
+  getAllCourses, // Renamed from getAllPublishedCourses for clarity, assuming controller has this
+  getCourseDetails,
+  enrollInCourse,
+  getMyEnrollments,
+  getCourseContent,
+  unenrollFromCourse,
+  getProfile, // Assuming studentController exports this
+  getMyCourses, // Assuming studentController exports this
+  getPublicCourses // Assuming studentController exports this
+} = require('../controllers/studentController');
 
-// NEW ROUTE: Get student profile
-router.get("/profile", studentController.getProfile);
+// --- Public Routes ---
+// Anyone can see the list of published courses
+router.get('/public-courses', getPublicCourses);
 
-// NEW ROUTE: Get my courses (same as enrollments but simplified for frontend)
-router.get("/my-courses", studentController.getMyCourses);
-// studentRoutes.js
-router.get('/public-courses', studentController.getPublicCourses);
+// --- Protected Routes (Require Student Login) ---
+// Apply middleware specifically to routes that need protection
 
+// Get all courses (requires login, maybe shows enrolled status?)
+router.get('/courses', authMiddleware, roleMiddleware('student'), getAllCourses);
+
+// Get details for a specific course (requires login)
+router.get('/courses/:id', authMiddleware, roleMiddleware('student'), getCourseDetails);
+
+// Enroll in a course (requires login)
+router.post('/courses/:id/enroll', authMiddleware, roleMiddleware('student'), enrollInCourse);
+
+// View personal enrollments (requires login)
+router.get('/my-enrollments', authMiddleware, roleMiddleware('student'), getMyEnrollments);
+
+// Access specific course content (requires login)
+router.get('/courses/:courseId/contents/:contentId', authMiddleware, roleMiddleware('student'), getCourseContent);
+
+// Unenroll from a course (requires login)
+router.delete('/courses/:id/unenroll', authMiddleware, roleMiddleware('student'), unenrollFromCourse);
+
+// Get student profile (requires login)
+router.get('/profile', authMiddleware, roleMiddleware('student'), getProfile);
+
+// Get enrolled courses (requires login)
+router.get('/my-courses', authMiddleware, roleMiddleware('student'), getMyCourses);
 
 module.exports = router;
+

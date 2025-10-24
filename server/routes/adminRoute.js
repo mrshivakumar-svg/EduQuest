@@ -1,34 +1,34 @@
 const express = require('express');
 const router = express.Router();
 
-const {
-  createAuthor,
-  getAllAuthors,
-  deleteAuthor,
-  getAllCourses,
-  publishCourse,
-  getCourseEnrollments,
-  getAllStudents,
-  deleteStudent
-} = require('../controllers/adminController');
+// Import the entire controller object
+const adminController = require('../controllers/adminController');
 
-const authMiddleware = require('../middleware/authMiddleware');
+// ✅ CORRECTED: Import both middleware functions from the object
+const { authMiddleware, roleMiddleware } = require('../middleware/authMiddleware');
 
-// This middleware protects all routes in this file
-router.use(authMiddleware('admin'));
+// ✅ CORRECTED: Apply both middleware functions correctly
+// This protects all subsequent routes in this file
+router.use(authMiddleware, roleMiddleware('admin'));
+
 
 // === Author Management Routes ===
-router.get('/authors', getAllAuthors);
-router.post('/authors', createAuthor);
-router.delete('/authors/:id', deleteAuthor);
+router.get('/authors', adminController.getAllAuthors);
+router.post('/authors', adminController.createAuthor);
+router.delete('/authors/:id', adminController.deleteAuthor);
 
 // === Course Management Routes ===
-router.get('/courses', getAllCourses);
-router.put('/courses/:id/publish', publishCourse);
-router.get('/courses/:id/enrollments', getCourseEnrollments);
+router.get('/courses', adminController.getAllCourses);
+router.get('/courses/:id', adminController.getCourseDetailsForAdmin);
+router.put('/courses/:id/publish', adminController.publishCourse);
+router.delete('/courses/:id', adminController.deleteCourse);
+router.get('/courses/:id/enrollments', adminController.getCourseEnrollments);
 
 // === Student Management Routes ===
-router.get('/students', getAllStudents);
-router.delete('/students/:id', deleteStudent);
+router.get('/students', adminController.getAllStudents);
+router.delete('/students/:id', adminController.deleteStudent);
+router.get('/students/:id/enrollments', adminController.getStudentEnrollments);
+
 
 module.exports = router;
+

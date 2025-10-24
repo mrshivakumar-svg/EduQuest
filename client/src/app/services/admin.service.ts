@@ -11,13 +11,20 @@ export class AdminService {
   constructor(private http: HttpClient) { }
 
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('authToken'); // Assumes you store the token here after login
+    // Make sure this key matches where the token is saved during login
+    const token = localStorage.getItem('token'); 
     return new HttpHeaders().set('Authorization', `Bearer ${token}`);
   }
 
-  // Course Management
+  // --- Course Management ---
   getAllCourses(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/courses`, { headers: this.getAuthHeaders() });
+  }
+
+  // ✅ ADDED Method to get details for one course
+  getCourseDetails(courseId: number): Observable<any> {
+    // Assumes backend endpoint exists at GET /api/admin/courses/:id
+    return this.http.get<any>(`${this.baseUrl}/courses/${courseId}`, { headers: this.getAuthHeaders() });
   }
 
   publishCourse(courseId: number): Observable<any> {
@@ -28,7 +35,11 @@ export class AdminService {
     return this.http.delete(`${this.baseUrl}/courses/${courseId}`, { headers: this.getAuthHeaders() });
   }
 
-  // Author Management
+  getCourseEnrollments(courseId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/courses/${courseId}/enrollments`, { headers: this.getAuthHeaders() });
+  }
+
+  // --- Author Management ---
   getAllAuthors(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/authors`, { headers: this.getAuthHeaders() });
   }
@@ -41,7 +52,7 @@ export class AdminService {
     return this.http.delete(`${this.baseUrl}/authors/${authorId}`, { headers: this.getAuthHeaders() });
   }
 
-  // ✅ ADDED SECTION: Student Management
+  // --- Student Management ---
   getAllStudents(): Observable<any[]> {
     return this.http.get<any[]>(`${this.baseUrl}/students`, { headers: this.getAuthHeaders() });
   }
@@ -49,4 +60,9 @@ export class AdminService {
   deleteStudent(studentId: number): Observable<any> {
     return this.http.delete(`${this.baseUrl}/students/${studentId}`, { headers: this.getAuthHeaders() });
   }
+
+  getStudentEnrollments(studentId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/students/${studentId}/enrollments`, { headers: this.getAuthHeaders() });
+  }
 }
+

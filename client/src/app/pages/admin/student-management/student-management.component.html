@@ -9,17 +9,44 @@
       </tr>
     </thead>
     <tbody>
+      <!-- Loop creates a row for each student -->
       <tr *ngFor="let student of students">
         <td>{{ student.name }}</td>
         <td>{{ student.email }}</td>
         <td class="actions">
-          <button class="delete-btn" (click)="onDeleteStudent(student.id)">Delete</button>
+          <!-- ✅ ADDED the "View Enrollments" button -->
+          <!-- It calls the onViewEnrollments function when clicked -->
+          <button class="btn view-btn" (click)="onViewEnrollments(student)">View Enrollments</button>
+          <button class="btn delete-btn" (click)="onDeleteStudent(student.id)">Delete</button>
         </td>
       </tr>
     </tbody>
   </table>
-  
+  <!-- Placeholder if no students exist -->
   <div *ngIf="students.length === 0" class="empty-placeholder">
     No students have registered yet.
   </div>
 </div>
+
+<!-- ✅ ADDED the Modal Popup code -->
+<!-- This entire section is hidden until isModalVisible becomes true -->
+<div *ngIf="isModalVisible" class="modal-overlay" (click)="closeModal()">
+  <!-- Clicking the overlay closes the modal -->
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Clicking inside the modal content prevents it from closing -->
+    <button class="close-btn" (click)="closeModal()">×</button>
+    <h3>Enrollments for {{ selectedStudent?.name }}</h3>
+    <!-- Display the list of enrolled courses -->
+    <ul *ngIf="selectedStudentEnrollments.length > 0; else noEnrollments">
+      <li *ngFor="let enrollment of selectedStudentEnrollments">
+        <!-- Make sure backend sends Course.title -->
+        {{ enrollment.Course?.title || 'Course Title Missing' }} (ID: {{ enrollment.courseId }})
+      </li>
+    </ul>
+    <!-- Message if student has no enrollments -->
+    <ng-template #noEnrollments>
+      <p>This student is not enrolled in any courses.</p>
+    </ng-template>
+  </div>
+</div>
+

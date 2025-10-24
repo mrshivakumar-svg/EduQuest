@@ -1,65 +1,48 @@
-<div *ngIf="course" class="container py-5">
-  <!-- Course Header -->
-  <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
-    <div class="row g-0">
-      <div class="col-md-5 text-center bg-light">
-        <img 
-          [src]="course.thumbnailUrl || 'https://via.placeholder.com/600x400?text=No+Image+Available'" 
-          alt="{{ course.title }}" 
-          class="img-fluid h-100 object-fit-cover"
-          style="max-height: 350px; width: 100%; object-fit: cover;"
-        />
-      </div>
+<div class="details-container">
+  <!-- Back button to return to the admin dashboard -->
+  <a routerLink="/admin/dashboard" class="back-link">&larr; Back to Dashboard</a>
 
-      <div class="col-md-7 p-4 d-flex flex-column justify-content-between">
-        <div>
-          <h2 class="fw-bold text-primary mb-2">{{ course.title }}</h2>
-          <p class="text-muted">{{ course.description }}</p>
-        </div>
+  <!-- Loading Indicator -->
+  <div *ngIf="isLoading" class="loading">
+    <p>Loading course details...</p>
+  </div>
 
-        <div class="mt-3">
-          <h5 class="fw-semibold mb-3 text-success"> Price: ₹{{ course?.price }}</h5>
-          <button 
-            *ngIf="!course.isEnrolled" 
-            class="btn btn-success btn-lg w-100 rounded-pill shadow-sm" 
-            (click)="enroll()">
-            Enroll Now
-          </button>
+  <!-- Course Details (only shown when loaded) -->
+  <div *ngIf="!isLoading && course">
+    <h1>{{ course.title }}</h1>
+    <p class="author-info">
+      Created by: <strong>{{ course.author?.name }}</strong> |
+      Status: <span class="status" [ngClass]="course.status">{{ course.status }}</span>
+    </p>
 
-          <button 
-            *ngIf="course.isEnrolled" 
-            class="btn btn-outline-secondary btn-lg w-100 rounded-pill shadow-sm" 
-            disabled>
-             Enrolled
-          </button>
-        </div>
-      </div>
+    <!-- Course Description Section -->
+    <div class="section">
+      <h3>Course Description</h3>
+      <p>{{ course.description || 'No description provided.' }}</p>
+    </div>
+
+    <!-- Course Content Section -->
+    <div class="section">
+      <h3>Course Content</h3>
+      <!-- Make sure 'course_contents' matches your backend response -->
+      <ul *ngIf="course.course_contents?.length > 0; else noContent">
+        <!-- Loop through each content item -->
+        <li *ngFor="let content of course.course_contents">
+          <strong>{{ content.title }}</strong> ({{ content.contentType }})
+          <br>
+          <!-- Display the link for the admin to review -->
+          <a [href]="content.file_url" target="_blank" rel="noopener noreferrer">{{ content.file_url }}</a>
+        </li>
+      </ul>
+      <!-- Placeholder if no content exists -->
+      <ng-template #noContent>
+        <p>This course has no content uploaded yet.</p>
+      </ng-template>
     </div>
   </div>
 
-  <!-- Course Contents -->
-  <div class="card shadow-sm border-0 rounded-4 p-4">
-    <h4 class="fw-bold text-primary mb-3">
-       Course Contents
-    </h4>
-
-    <ul class="list-group list-group-flush">
-      <li 
-        *ngFor="let c of course.contents" 
-        class="list-group-item d-flex justify-content-between align-items-center py-3 px-2 border-0 border-bottom">
-        <div>
-          <span class="fw-semibold">{{ c.title }}</span>
-          <small class="text-muted ms-2">({{ c.contentType }})</small>
-        </div>
-        <button 
-          class="btn btn-outline-primary btn-sm rounded-pill px-3" 
-          (click)="openContent(c.id)">
-          Open
-        </button>
-      </li>
-      <li *ngIf="!course.contents?.length" class="list-group-item text-center text-muted py-4 border-0">
-        No content available yet.
-      </li>
-    </ul>
+  <!-- Error message if course fails to load -->
+  <div *ngIf="!isLoading && !course">
+    <p>Could not load course details.</p>
   </div>
 </div>

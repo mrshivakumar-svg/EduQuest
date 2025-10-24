@@ -1,14 +1,17 @@
 <div class="admin-container">
   <h1>Admin Dashboard</h1>
 
+  <!-- Tab Navigation -->
   <nav class="tabs">
     <button [class.active]="activeTab === 'courses'" (click)="activeTab = 'courses'">Course Management</button>
     <button [class.active]="activeTab === 'authors'" (click)="activeTab = 'authors'">Author Management</button>
     <button [class.active]="activeTab === 'students'" (click)="activeTab = 'students'">Student Management</button>
   </nav>
 
+  <!-- Tab Content Area -->
   <div class="tab-content">
-    <!-- Course Management View -->
+
+    <!-- Course Management Tab -->
     <div *ngIf="activeTab === 'courses'">
       <h2>All Courses</h2>
       <table>
@@ -21,33 +24,43 @@
           </tr>
         </thead>
         <tbody>
-          <!-- This loop shows a row for each course -->
+          <!-- Loop through each course and display a row -->
           <tr *ngFor="let course of courses">
             <td>{{ course.title }}</td>
             <td>{{ course.author?.name || 'N/A' }}</td>
-            <td><span class="status" [ngClass]="course.status">{{ course.status }}</span></td>
+            <td>
+              <!-- Display status badge with dynamic styling -->
+              <span class="status" [ngClass]="course.status">{{ course.status }}</span>
+            </td>
             <td class="actions">
-              <!-- The "Publish" button will only appear if the course status is 'pending' -->
-              <button *ngIf="course.status === 'pending'" class="publish-btn" (click)="onPublish(course.id)">Publish</button>
-              <button class="delete-btn" (click)="onDeleteCourse(course.id)">Delete</button>
+              <!-- View Button: Links to the course details page -->
+              <button class="btn view-btn" [routerLink]="['/admin/course', course.id]">View</button>
+
+              <!-- Publish Button: Only shown if course is 'pending' -->
+              <button *ngIf="course.status === 'pending'" class="btn publish-btn" (click)="onPublish(course.id)">Publish</button>
+
+              <!-- Delete Button -->
+              <button class="btn delete-btn" (click)="onDeleteCourse(course.id)">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <!-- This placeholder message will show ONLY if the courses array is empty -->
+      <!-- Placeholder shown if there are no courses -->
       <div *ngIf="courses.length === 0" class="empty-placeholder">
         No courses found. New courses created by authors will appear here for approval.
       </div>
     </div>
 
-    <!-- Author Management View -->
+    <!-- Author Management Tab: Displays the AuthorManagementComponent -->
     <div *ngIf="activeTab === 'authors'">
       <app-author-management></app-author-management>
     </div>
 
-    <!-- Student Management View -->
+    <!-- Student Management Tab: Displays the StudentManagementComponent -->
     <div *ngIf="activeTab === 'students'">
       <app-student-management></app-student-management>
     </div>
-  </div>
-</div>
+
+  </div> <!-- End of tab-content -->
+</div> <!-- End of admin-container -->
+
