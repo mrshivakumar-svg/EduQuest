@@ -25,11 +25,15 @@ export class CourseDetailsComponent implements OnInit {
 }
 
   enroll(): void {
-    this.api.enrollInCourse(this.courseId).subscribe({
-      next: () => alert('Successfully enrolled!'),
-      error: (err) => alert(err.error?.message || 'Error enrolling')
-    });
-  }
+  this.api.enrollInCourse(this.courseId).subscribe({
+    next: () => {
+      alert('Successfully enrolled!');
+      this.course.isEnrolled = true; // ✅ update UI immediately
+    },
+    error: (err) => alert(err.error?.message || 'Error enrolling')
+  });
+}
+
   openContent(contentId: number): void {
     this.api.getCourseContent(this.courseId, contentId).subscribe({
       next: (res) => {
