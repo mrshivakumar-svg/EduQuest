@@ -14,6 +14,7 @@ import { ApiService } from '../../services/api.service';
 export class RegisterComponent {
   registerForm: FormGroup;
   message = '';
+  showPassword = false; 
 
   constructor(private fb: FormBuilder, private api: ApiService, private router: Router) {
     this.registerForm = this.fb.group({
@@ -22,6 +23,9 @@ export class RegisterComponent {
       password: [''],
       role: ['student'],
     });
+  }
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   submitRegister() {

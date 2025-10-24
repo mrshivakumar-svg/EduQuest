@@ -14,7 +14,8 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent {
   loginForm: FormGroup;
-  message = '';
+  message = ''; // show custom error messages
+  showPassword = false; // 👁️ toggle visibility
 
   constructor(
     private fb: FormBuilder,
@@ -29,11 +30,25 @@ export class LoginComponent {
     });
   }
 
-  onLogin() {
-    this.api.loginUser(this.loginForm.value).subscribe({
-      next: (res) => {
-        this.authService.login(res.token, res.user.role);
+  // 👁️ toggle password visibility
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
+  // 🔑 login handler
+  onLogin(): void {
+    this.message = ''; // clear previous error message
+    const { email, password } = this.loginForm.value;
+
+    if (!email || !password) {
+      this.message = 'Please enter both email and password.';
+      return;
+    }
+
+    this.api.loginUser({ email, password }).subscribe({
+      next: (res) => {
+        // login success
+        this.authService.login(res.token, res.user.role);
         const redirectUrl = this.route.snapshot.queryParamMap.get('redirectTo');
         if (redirectUrl) {
           this.router.navigateByUrl(redirectUrl);
@@ -44,7 +59,16 @@ export class LoginComponent {
         }
       },
       error: (err) => {
-        this.message = err.error?.message || 'Login failed';
+        console.error('Login error:', err);
+
+        // Differentiate error messages
+        if (err.status === 404) {
+          this.message = 'No account found with this email.';
+        } else if (err.status === 400) {
+          this.message = 'Incorrect password. Please try again.';
+        } else {
+          this.message = 'Login failed. Please try again later.';
+        }
       },
     });
   }

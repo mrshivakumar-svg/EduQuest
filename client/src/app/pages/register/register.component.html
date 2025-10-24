@@ -14,7 +14,27 @@
 
     <div class="mb-3">
       <label class="form-label">Password</label>
-      <input type="password" class="form-control" formControlName="password" />
+      <input  [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password" />
+      <button
+  type="button"
+  class="btn btn-sm border-0 bg-transparent"
+  (click)="togglePasswordVisibility()"
+  style="
+    position: absolute;
+    top: 58.5%;
+    right: 407px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #b0d6f8;
+    z-index: 10;
+  "
+>
+  <i
+    class="fa"
+    [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+    style="font-size: 1rem;"
+  ></i>
+</button>
     </div>
 
     <!-- Hidden default role -->

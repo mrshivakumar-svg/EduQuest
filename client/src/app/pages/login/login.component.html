@@ -2,14 +2,55 @@
   <h2 class="text-center text-primary mb-4 fw-bold">Login</h2>
 
   <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+    <!-- Email -->
     <div class="mb-3">
-      <label>Email</label>
-      <input type="email" class="form-control" formControlName="email" />
+      <label class="form-label">Email</label>
+      <input
+        type="email"
+        class="form-control"
+        formControlName="email"
+        placeholder="Enter your email"
+        required
+      />
     </div>
 
-    <div class="mb-3">
-      <label>Password</label>
-      <input type="password" class="form-control" formControlName="password" />
+    <!-- Password -->
+    <div class="mb-3 position-relative">
+      <label class="form-label">Password</label>
+      <input
+        [type]="showPassword ? 'text' : 'password'"
+        class="form-control pe-5"
+        formControlName="password"
+        placeholder="Enter your password"
+        required
+      />
+      <!-- 👁️ Eye Icon (visible always) -->
+      <button
+  type="button"
+  class="btn btn-sm border-0 bg-transparent"
+  (click)="togglePasswordVisibility()"
+  style="
+    position: absolute;
+    top: 75%;
+    right: 2px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #b0d6f8;
+    z-index: 10;
+  "
+>
+  <i
+    class="fa"
+    [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"
+    style="font-size: 1rem;"
+  ></i>
+</button>
+
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="message" class="alert alert-danger py-2 text-center">
+      {{ message }}
     </div>
 
     <button type="submit" class="btn btn-primary w-100">Login</button>
@@ -17,10 +58,11 @@
 
   <p class="text-center mt-3 text-muted">
     Don’t have an account?
-    <a routerLink="/register" class="text-primary fw-semibold text-decoration-none">
+    <a
+      routerLink="/register"
+      class="text-primary fw-semibold text-decoration-none"
+    >
       Register here
     </a>
   </p>
-
- 
 </div>
