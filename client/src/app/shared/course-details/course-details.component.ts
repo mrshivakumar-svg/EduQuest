@@ -18,11 +18,12 @@ export class CourseDetailsComponent implements OnInit {
     this.loadCourse();
   }
   loadCourse(): void {
-    this.api.getCourseDetails(this.courseId).subscribe({
-      next: (res) => (this.course = res),
-      error: (err) => console.error('Error loading course details:', err)
-    });
-  }
+  this.api.getCourseDetailsByRole(this.courseId).subscribe({
+    next: (res) => (this.course = res),
+    error: (err) => console.error('Error loading course details:', err)
+  });
+}
+
   enroll(): void {
     this.api.enrollInCourse(this.courseId).subscribe({
       next: () => alert('Successfully enrolled!'),

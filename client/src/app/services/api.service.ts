@@ -71,14 +71,21 @@ getCourseByIdForAuthor(id: number | string): Observable<any> {
     });
     return this.http.get(`${this.apiUrl}/student/courses`, { headers });
   }
-  getCourseDetails(id: number): Observable<any> {
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    });
+ getCourseDetailsByRole(id: number): Observable<any> {
+  const token = localStorage.getItem('token') || '';
+  const role = localStorage.getItem('role'); // store role on login
+  const headers = new HttpHeaders({
+    Authorization: `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  });
+
+  if (role === 'admin') {
+    return this.http.get(`${this.apiUrl}/admin/courses/${id}`, { headers });
+  } else {
     return this.http.get(`${this.apiUrl}/student/courses/${id}`, { headers });
   }
+}
+
   enrollInCourse(id: number): Observable<any> {
   const token = localStorage.getItem('token') || '';
     const headers = new HttpHeaders({
