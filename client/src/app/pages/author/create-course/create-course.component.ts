@@ -3,13 +3,15 @@ import { FormBuilder, FormGroup, Validators, FormArray, ReactiveFormsModule } fr
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { CommonModule } from '@angular/common';
+import { ModalService } from '../../../shared/modal/modal.service';
+import { CommonModalComponent } from '../../../shared/modal/common-modal.component';
 
 @Component({
   selector: 'app-create-course',
   templateUrl: './create-course.component.html',
   styleUrls: ['./create-course.component.scss'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CommonModalComponent],
   providers: [ApiService]
 })
 export class CreateCourseComponent implements OnInit {
@@ -21,7 +23,8 @@ export class CreateCourseComponent implements OnInit {
     private fb: FormBuilder,
     private api: ApiService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private modalService: ModalService
   ) {
     this.courseForm = this.fb.group({
       title: ['', Validators.required],
@@ -90,50 +93,67 @@ export class CreateCourseComponent implements OnInit {
           );
         });
       },
-      error: err => console.error('Error loading course:', err)
+      error: err => {
+        console.error('Error loading course:', err);
+        this.modalService.open('Error', 'Failed to load course data.', 'error');
+      }
     });
   }
 
   saveCourse(): void {
     console.log('🟢 Save course clicked', this.courseForm.value);
 
+    // ✅ Check if form is valid
     if (!this.courseForm.valid) {
-      console.warn('⚠️ Form invalid');
+      this.modalService.open('Error', 'Please fill all required course fields.', 'error');
+      return;
+    }
+
+    // ✅ Check if at least one content is added
+    const contentsArray = this.courseForm.get('contents') as FormArray;
+    if (contentsArray.length === 0) {
+      this.modalService.open('Error', 'Please add at least one course content before saving.', 'error');
       return;
     }
 
     const courseData = { ...this.courseForm.value };
-    const contentsArray = courseData.contents;
+    const contents = courseData.contents;
     delete courseData.contents;
 
     if (this.isEditMode && this.courseId) {
       // Update course
       this.api.updateCourse(this.courseId, courseData).subscribe({
         next: () => {
-          contentsArray.forEach((c: any) => {
+          contents.forEach((c: any) => {
             if (c.id) {
               this.api.updateCourseContent(c.id, c).subscribe();
             } else {
               this.api.addCourseContent(Number(this.courseId), c).subscribe();
             }
           });
-          window.alert('Course and contents updated successfully!');
+          this.modalService.open('Success', 'Course and contents updated successfully!', 'success');
           this.router.navigate(['/author/dashboard']);
         },
-        error: err => console.error(err)
+        error: err => {
+          console.error(err);
+          this.modalService.open('Error', 'Failed to update course.', 'error');
+        }
       });
     } else {
       // Create new course
       this.api.createCourse(courseData).subscribe({
         next: (res: any) => {
           const newCourseId = res.course.id;
-          contentsArray.forEach((c: any) => {
+          contents.forEach((c: any) => {
             this.api.addCourseContent(newCourseId, c).subscribe();
           });
-          window.alert('Course created successfully!');
+          this.modalService.open('Success', 'Course created successfully!', 'success');
           this.router.navigate(['/author/dashboard']);
         },
-        error: err => console.error(err)
+        error: err => {
+          console.error(err);
+          this.modalService.open('Error', 'Failed to create course.', 'error');
+        }
       });
     }
   }

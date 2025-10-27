@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ApiService } from '../../services/api.service';
+import { ModalService } from '../../shared/modal/modal.service';
 
 @Component({
   selector: 'app-register',
@@ -16,7 +17,7 @@ export class RegisterComponent {
   message = '';
   showPassword = false; 
 
-  constructor(private fb: FormBuilder, private api: ApiService, private router: Router) {
+  constructor(private fb: FormBuilder, private api: ApiService, private router: Router, private modalService: ModalService) {
     this.registerForm = this.fb.group({
       name: [''],
       email: [''],
@@ -31,11 +32,11 @@ export class RegisterComponent {
   submitRegister() {
     this.api.registerUser(this.registerForm.value).subscribe({
       next: (res) => {
-        alert('Registration successful! You can now login.');
+        this.modalService.open('Registration successful! You can now login.', 'success');
         this.router.navigate(['/login']);
       },
       error: (err) => {
-        this.message = err.error.message || 'Registration failed';
+        this.modalService.open(err.error.message || 'Registration failed', 'error');
       },
     });
   }
