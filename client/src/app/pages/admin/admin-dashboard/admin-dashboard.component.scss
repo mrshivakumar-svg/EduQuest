@@ -116,9 +116,11 @@ table {
 // Styles all buttons within the 'actions' table column.
 .actions {
   // General button styles
-  button, .btn { // Apply to button elements and elements with .btn class
-    padding: 0.6rem 1.2rem;
-    border-radius: 5px;
+  button, .btn {
+    // ✅ REDUCED PADDING & FONT-SIZE
+    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    border-radius: 4px;
     border: none;
     cursor: pointer;
     color: #ffffff;
@@ -132,7 +134,7 @@ table {
   }
 
   // Specific button styles
-  .view-btn { // Styles the "View" button blue
+  .view-btn { // ✅ Styles the "View" button blue
     background-color: #007bff;
     &:hover { background-color: #0056b3; }
   }
@@ -147,9 +149,8 @@ table {
     &:hover { background-color: #c82333; }
   }
 
-  // Style for the View Enrollments button
-  .enroll-btn {
-    background-color: #17a2b8; // Teal color
+  .enroll-btn { // Styles the "View Enrollments" button teal
+    background-color: #17a2b8;
     &:hover { background-color: #138496; }
   }
 }
