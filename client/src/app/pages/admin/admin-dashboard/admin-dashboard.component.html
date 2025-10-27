@@ -11,6 +11,7 @@
     <!-- Course Management View -->
     <div *ngIf="activeTab === 'courses'">
       <h2>All Courses</h2>
+
       <table>
         <thead>
           <tr>
@@ -26,19 +27,15 @@
             <td>{{ course.author?.name || 'N/A' }}</td>
             <td><span class="status" [ngClass]="course.status">{{ course.status }}</span></td>
             <td class="actions">
-              <!-- View Content Button -->
               <button class="btn view-btn" [routerLink]="['/admin/course', course.id]">View Content</button>
-              <!-- ✅ ADDED View Enrollments button for Courses -->
               <button class="btn enroll-btn" (click)="onViewCourseEnrollments(course)">View Enrollments</button>
-              <!-- Publish Button (conditional) -->
               <button *ngIf="course.status === 'pending'" class="btn publish-btn" (click)="onPublish(course.id)">Publish</button>
-              <!-- Delete Button -->
               <button class="btn delete-btn" (click)="onDeleteCourse(course.id)">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <!-- Placeholder if no courses exist -->
+
       <div *ngIf="courses.length === 0" class="empty-placeholder">
         No courses found. New courses created by authors will appear here for approval.
       </div>
@@ -55,21 +52,42 @@
     </div>
   </div>
 
-  <!-- Modal Popup for viewing course enrollments -->
+  <!-- ✅ Modal Popup for viewing course enrollments -->
   <div *ngIf="isCourseEnrollmentModalVisible" class="modal-overlay" (click)="closeCourseEnrollmentModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <button class="close-btn" (click)="closeCourseEnrollmentModal()">×</button>
+
       <h3>Students Enrolled in {{ selectedCourseForEnrollments?.title }}</h3>
-      <ul *ngIf="selectedCourseEnrollmentsList.length > 0; else noCourseEnrollments">
-        <li *ngFor="let enrollment of selectedCourseEnrollmentsList">
-          <!-- Ensure backend sends User details -->
-          {{ enrollment.User?.name || 'Student Name Missing' }} ({{ enrollment.User?.email || 'Email Missing' }})
-        </li>
-      </ul>
+
+      <!-- Enrollment Table -->
+      <table *ngIf="selectedCourseEnrollmentsList.length > 0; else noCourseEnrollments" class="enrollments-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Student Name</th>
+            <th>Email</th>
+            <th>Enrolled At</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let enrollment of selectedCourseEnrollmentsList; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>
+              {{ enrollment.student?.name || enrollment.User?.name || 'Name Missing' }}
+            </td>
+            <td>
+              {{ enrollment.student?.email || enrollment.User?.email || 'Email Missing' }}
+            </td>
+            <td>
+              {{ enrollment.enrolledAt | date: 'medium' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
       <ng-template #noCourseEnrollments>
         <p>No students are currently enrolled in this course.</p>
       </ng-template>
     </div>
   </div>
 </div>
-

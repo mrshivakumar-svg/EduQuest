@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router'; // Needed for [routerLink]
+import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../services/admin.service';
 import { AuthorManagementComponent } from '../author-management/author-management.component';
 import { StudentManagementComponent } from '../student-management/student-management.component';
@@ -21,12 +21,11 @@ export class AdminDashboardComponent implements OnInit {
   activeTab: string = 'courses';
   courses: any[] = [];
 
-  // ✅ ADDED properties for the course enrollment modal
   isCourseEnrollmentModalVisible = false;
   selectedCourseForEnrollments: any = null;
   selectedCourseEnrollmentsList: any[] = [];
 
-  constructor(private adminService: AdminService) { }
+  constructor(private adminService: AdminService) {}
 
   ngOnInit(): void {
     this.loadCourses();
@@ -35,7 +34,7 @@ export class AdminDashboardComponent implements OnInit {
   loadCourses(): void {
     this.adminService.getAllCourses().subscribe({
       next: (data) => { this.courses = data; },
-      error: (err) => { console.error("Error loading courses:", err); }
+      error: (err) => { console.error('Error loading courses:', err); }
     });
   }
 
@@ -43,7 +42,7 @@ export class AdminDashboardComponent implements OnInit {
     if (confirm('Are you sure you want to publish this course?')) {
       this.adminService.publishCourse(courseId).subscribe({
         next: () => { this.loadCourses(); },
-        error: (err) => { console.error("Error publishing course:", err); }
+        error: (err) => { console.error('Error publishing course:', err); }
       });
     }
   }
@@ -52,31 +51,29 @@ export class AdminDashboardComponent implements OnInit {
     if (confirm('Are you sure you want to delete this course?')) {
       this.adminService.deleteCourse(courseId).subscribe({
         next: () => { this.loadCourses(); },
-        error: (err) => { console.error("Error deleting course:", err); }
+        error: (err) => { console.error('Error deleting course:', err); }
       });
     }
   }
 
-  // ✅ ADDED function to open the course enrollment modal
+  // ✅ Updated to handle both `student` and `User` from backend
   onViewCourseEnrollments(course: any): void {
     this.selectedCourseForEnrollments = course;
     this.adminService.getCourseEnrollments(course.id).subscribe({
       next: (data) => {
-        this.selectedCourseEnrollmentsList = data;
+        this.selectedCourseEnrollmentsList = data || [];
         this.isCourseEnrollmentModalVisible = true;
       },
       error: (err) => {
-        console.error("Error loading course enrollments:", err);
-        alert("Could not load enrollments for this course.");
+        console.error('Error loading course enrollments:', err);
+        alert('Could not load enrollments for this course.');
       }
     });
   }
 
-  // ✅ ADDED function to close the course enrollment modal
   closeCourseEnrollmentModal(): void {
     this.isCourseEnrollmentModalVisible = false;
     this.selectedCourseForEnrollments = null;
     this.selectedCourseEnrollmentsList = [];
   }
 }
-
