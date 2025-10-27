@@ -138,7 +138,7 @@ const getCourseEnrollments = async (req, res) => {
       where: { courseId: req.params.id },
       include: [{
         model: User,
-        as: 'User', // IMPORTANT: Confirm this alias in models/enrollment.js
+        as: 'student', // IMPORTANT: Confirm this alias in models/enrollment.js
         attributes: ['id', 'name', 'email']
       }]
     });
@@ -186,7 +186,7 @@ const getStudentEnrollments = async (req, res) => {
             where: { userId: userId },
             include: [{
                 model: Course,
-                as: 'Course', // IMPORTANT: Confirm this alias in models/enrollment.js
+                as: 'course', // IMPORTANT: Confirm this alias in models/enrollment.js
                 attributes: ['id', 'title']
             }]
         });

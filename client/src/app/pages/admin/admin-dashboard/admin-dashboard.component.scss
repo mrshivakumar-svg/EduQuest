@@ -105,6 +105,11 @@ table {
     background-color: #fff3cd;
     color: #856404;
   }
+  // Optional: Add rejected status style if needed
+  &.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+  }
 }
 
 // --- Action Button Styling ---
@@ -127,7 +132,7 @@ table {
   }
 
   // Specific button styles
-  .view-btn { // ✅ ADDED: Styles the "View" button blue
+  .view-btn { // Styles the "View" button blue
     background-color: #007bff;
     &:hover { background-color: #0056b3; }
   }
@@ -141,4 +146,64 @@ table {
     background-color: #dc3545;
     &:hover { background-color: #c82333; }
   }
+
+  // Style for the View Enrollments button
+  .enroll-btn {
+    background-color: #17a2b8; // Teal color
+    &:hover { background-color: #138496; }
+  }
 }
+
+// Styles for the modal popups
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 600px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+
+  h3 {
+    margin-top: 0;
+    color: #333;
+  }
+
+  ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #aaa;
+  &:hover {
+    color: #333;
+  }
+}
+
