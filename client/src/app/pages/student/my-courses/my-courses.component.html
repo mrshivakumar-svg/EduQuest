@@ -18,7 +18,9 @@
           <p class="card-text text-muted">
             {{ course.description?.slice(0, 120) }}{{ course.description?.length > 120 ? '...' : '' }}
           </p>
-          <p class="mb-2"><strong>Price:</strong> {{ course.price | currency }}</p>
+          <p class="fw-bold text-secondary mb-3">
+  {{ course.price | currency:'INR':'symbol':'1.0-0' }}
+</p>
           <button
             class="btn btn-outline-primary btn-sm"
             (click)="viewCourseDetails(course.id)"
