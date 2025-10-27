@@ -1,17 +1,14 @@
 <div class="admin-container">
   <h1>Admin Dashboard</h1>
 
-  <!-- Tab Navigation -->
   <nav class="tabs">
     <button [class.active]="activeTab === 'courses'" (click)="activeTab = 'courses'">Course Management</button>
     <button [class.active]="activeTab === 'authors'" (click)="activeTab = 'authors'">Author Management</button>
     <button [class.active]="activeTab === 'students'" (click)="activeTab = 'students'">Student Management</button>
   </nav>
 
-  <!-- Tab Content Area -->
   <div class="tab-content">
-
-    <!-- Course Management Tab -->
+    <!-- Course Management View -->
     <div *ngIf="activeTab === 'courses'">
       <h2>All Courses</h2>
       <table>
@@ -24,43 +21,55 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Loop through each course and display a row -->
           <tr *ngFor="let course of courses">
             <td>{{ course.title }}</td>
             <td>{{ course.author?.name || 'N/A' }}</td>
-            <td>
-              <!-- Display status badge with dynamic styling -->
-              <span class="status" [ngClass]="course.status">{{ course.status }}</span>
-            </td>
+            <td><span class="status" [ngClass]="course.status">{{ course.status }}</span></td>
             <td class="actions">
-              <!-- View Button: Links to the course details page -->
-              <button class="btn view-btn" [routerLink]="['/admin/course', course.id]">View</button>
-
-              <!-- Publish Button: Only shown if course is 'pending' -->
+              <!-- View Content Button -->
+              <button class="btn view-btn" [routerLink]="['/admin/course', course.id]">View Content</button>
+              <!-- ✅ ADDED View Enrollments button for Courses -->
+              <button class="btn enroll-btn" (click)="onViewCourseEnrollments(course)">View Enrollments</button>
+              <!-- Publish Button (conditional) -->
               <button *ngIf="course.status === 'pending'" class="btn publish-btn" (click)="onPublish(course.id)">Publish</button>
-
               <!-- Delete Button -->
               <button class="btn delete-btn" (click)="onDeleteCourse(course.id)">Delete</button>
             </td>
           </tr>
         </tbody>
       </table>
-      <!-- Placeholder shown if there are no courses -->
+      <!-- Placeholder if no courses exist -->
       <div *ngIf="courses.length === 0" class="empty-placeholder">
         No courses found. New courses created by authors will appear here for approval.
       </div>
     </div>
 
-    <!-- Author Management Tab: Displays the AuthorManagementComponent -->
+    <!-- Author Management View -->
     <div *ngIf="activeTab === 'authors'">
       <app-author-management></app-author-management>
     </div>
 
-    <!-- Student Management Tab: Displays the StudentManagementComponent -->
+    <!-- Student Management View -->
     <div *ngIf="activeTab === 'students'">
       <app-student-management></app-student-management>
     </div>
+  </div>
 
-  </div> <!-- End of tab-content -->
-</div> <!-- End of admin-container -->
+  <!-- Modal Popup for viewing course enrollments -->
+  <div *ngIf="isCourseEnrollmentModalVisible" class="modal-overlay" (click)="closeCourseEnrollmentModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeCourseEnrollmentModal()">×</button>
+      <h3>Students Enrolled in {{ selectedCourseForEnrollments?.title }}</h3>
+      <ul *ngIf="selectedCourseEnrollmentsList.length > 0; else noCourseEnrollments">
+        <li *ngFor="let enrollment of selectedCourseEnrollmentsList">
+          <!-- Ensure backend sends User details -->
+          {{ enrollment.User?.name || 'Student Name Missing' }} ({{ enrollment.User?.email || 'Email Missing' }})
+        </li>
+      </ul>
+      <ng-template #noCourseEnrollments>
+        <p>No students are currently enrolled in this course.</p>
+      </ng-template>
+    </div>
+  </div>
+</div>
 

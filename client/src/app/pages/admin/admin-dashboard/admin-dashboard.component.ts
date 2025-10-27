@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router'; // For the [routerLink] directive
+import { RouterLink } from '@angular/router'; // Needed for [routerLink]
 import { AdminService } from '../../../services/admin.service';
 import { AuthorManagementComponent } from '../author-management/author-management.component';
 import { StudentManagementComponent } from '../student-management/student-management.component';
@@ -9,47 +9,74 @@ import { StudentManagementComponent } from '../student-management/student-manage
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [
-    CommonModule, // Needed for *ngIf, *ngFor, [ngClass]
-    RouterLink,   // Needed for the [routerLink] View button
-    AuthorManagementComponent, // Needed to display <app-author-management>
-    StudentManagementComponent // Needed to display <app-student-management>
+    CommonModule,
+    RouterLink,
+    AuthorManagementComponent,
+    StudentManagementComponent
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
 })
 export class AdminDashboardComponent implements OnInit {
-  activeTab: string = 'courses'; // Default tab
-  courses: any[] = []; // Array to hold the course list
+  activeTab: string = 'courses';
+  courses: any[] = [];
+
+  // ✅ ADDED properties for the course enrollment modal
+  isCourseEnrollmentModalVisible = false;
+  selectedCourseForEnrollments: any = null;
+  selectedCourseEnrollmentsList: any[] = [];
 
   constructor(private adminService: AdminService) { }
 
   ngOnInit(): void {
-    this.loadCourses(); // Load courses when the component initializes
+    this.loadCourses();
   }
 
-  // Fetches the list of all courses from the backend
   loadCourses(): void {
-    this.adminService.getAllCourses().subscribe(data => {
-      this.courses = data;
+    this.adminService.getAllCourses().subscribe({
+      next: (data) => { this.courses = data; },
+      error: (err) => { console.error("Error loading courses:", err); }
     });
   }
 
-  // Called when the "Publish" button is clicked
   onPublish(courseId: number): void {
     if (confirm('Are you sure you want to publish this course?')) {
-      this.adminService.publishCourse(courseId).subscribe(() => {
-        this.loadCourses(); // Refresh the list after publishing
+      this.adminService.publishCourse(courseId).subscribe({
+        next: () => { this.loadCourses(); },
+        error: (err) => { console.error("Error publishing course:", err); }
       });
     }
   }
 
-  // Called when the "Delete" button is clicked
   onDeleteCourse(courseId: number): void {
     if (confirm('Are you sure you want to delete this course?')) {
-      this.adminService.deleteCourse(courseId).subscribe(() => {
-        this.loadCourses(); // Refresh the list after deleting
+      this.adminService.deleteCourse(courseId).subscribe({
+        next: () => { this.loadCourses(); },
+        error: (err) => { console.error("Error deleting course:", err); }
       });
     }
+  }
+
+  // ✅ ADDED function to open the course enrollment modal
+  onViewCourseEnrollments(course: any): void {
+    this.selectedCourseForEnrollments = course;
+    this.adminService.getCourseEnrollments(course.id).subscribe({
+      next: (data) => {
+        this.selectedCourseEnrollmentsList = data;
+        this.isCourseEnrollmentModalVisible = true;
+      },
+      error: (err) => {
+        console.error("Error loading course enrollments:", err);
+        alert("Could not load enrollments for this course.");
+      }
+    });
+  }
+
+  // ✅ ADDED function to close the course enrollment modal
+  closeCourseEnrollmentModal(): void {
+    this.isCourseEnrollmentModalVisible = false;
+    this.selectedCourseForEnrollments = null;
+    this.selectedCourseEnrollmentsList = [];
   }
 }
 
