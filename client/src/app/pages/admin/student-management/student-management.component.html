@@ -1,6 +1,5 @@
 <div class="student-management">
   <h2>Existing Students</h2>
-
   <table>
     <thead>
       <tr>
@@ -20,20 +19,16 @@
       </tr>
     </tbody>
   </table>
-
   <div *ngIf="students.length === 0" class="empty-placeholder">
     No students have registered yet.
   </div>
 </div>
-
-<!-- ✅ Modal Popup -->
+<!-- :white_check_mark: Modal Popup -->
 <div *ngIf="isModalVisible" class="modal-overlay" (click)="closeModal()">
   <div class="modal-content" (click)="$event.stopPropagation()">
     <button class="close-btn" (click)="closeModal()">×</button>
-
     <h3>Enrollments for {{ selectedStudent?.name }}</h3>
-
-    <!-- ✅ Scrollable table wrapper -->
+    <!-- :white_check_mark: Scrollable table wrapper -->
     <div class="table-scroll-container" *ngIf="selectedStudentEnrollments.length > 0; else noEnrollments">
       <table class="enrollments-table">
         <thead>
@@ -54,9 +49,9 @@
         </tbody>
       </table>
     </div>
-
     <ng-template #noEnrollments>
       <p>This student is not enrolled in any courses.</p>
     </ng-template>
   </div>
 </div>
+<app-common-modal></app-common-modal>

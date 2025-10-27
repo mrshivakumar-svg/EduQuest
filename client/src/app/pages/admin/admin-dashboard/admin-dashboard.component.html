@@ -1,17 +1,14 @@
 <div class="admin-container">
   <h1>Admin Dashboard</h1>
-
   <nav class="tabs">
     <button [class.active]="activeTab === 'courses'" (click)="activeTab = 'courses'">Course Management</button>
     <button [class.active]="activeTab === 'authors'" (click)="activeTab = 'authors'">Author Management</button>
     <button [class.active]="activeTab === 'students'" (click)="activeTab = 'students'">Student Management</button>
   </nav>
-
   <div class="tab-content">
     <!-- Course Management View -->
     <div *ngIf="activeTab === 'courses'">
       <h2>All Courses</h2>
-
       <table>
         <thead>
           <tr>
@@ -35,31 +32,24 @@
           </tr>
         </tbody>
       </table>
-
       <div *ngIf="courses.length === 0" class="empty-placeholder">
         No courses found. New courses created by authors will appear here for approval.
       </div>
     </div>
-
     <!-- Author Management View -->
     <div *ngIf="activeTab === 'authors'">
       <app-author-management></app-author-management>
     </div>
-
     <!-- Student Management View -->
     <div *ngIf="activeTab === 'students'">
       <app-student-management></app-student-management>
     </div>
   </div>
-
-  <!-- ✅ Modal Popup for viewing course enrollments -->
+  <!-- Modal for Viewing Enrollments -->
   <div *ngIf="isCourseEnrollmentModalVisible" class="modal-overlay" (click)="closeCourseEnrollmentModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <button class="close-btn" (click)="closeCourseEnrollmentModal()">×</button>
-
       <h3>Students Enrolled in {{ selectedCourseForEnrollments?.title }}</h3>
-
-      <!-- Enrollment Table -->
       <table *ngIf="selectedCourseEnrollmentsList.length > 0; else noCourseEnrollments" class="enrollments-table">
         <thead>
           <tr>
@@ -72,22 +62,17 @@
         <tbody>
           <tr *ngFor="let enrollment of selectedCourseEnrollmentsList; let i = index">
             <td>{{ i + 1 }}</td>
-            <td>
-              {{ enrollment.student?.name || enrollment.User?.name || 'Name Missing' }}
-            </td>
-            <td>
-              {{ enrollment.student?.email || enrollment.User?.email || 'Email Missing' }}
-            </td>
-            <td>
-              {{ enrollment.enrolledAt | date: 'medium' }}
-            </td>
+            <td>{{ enrollment.student?.name || enrollment.User?.name || 'Name Missing' }}</td>
+            <td>{{ enrollment.student?.email || enrollment.User?.email || 'Email Missing' }}</td>
+            <td>{{ enrollment.enrolledAt | date: 'medium' }}</td>
           </tr>
         </tbody>
       </table>
-
       <ng-template #noCourseEnrollments>
         <p>No students are currently enrolled in this course.</p>
       </ng-template>
     </div>
   </div>
+  <!-- Common Modal Component for messages -->
+  <app-common-modal></app-common-modal>
 </div>

@@ -4,7 +4,8 @@ import { RouterLink } from '@angular/router';
 import { AdminService } from '../../../services/admin.service';
 import { AuthorManagementComponent } from '../author-management/author-management.component';
 import { StudentManagementComponent } from '../student-management/student-management.component';
-
+import { ModalService } from '../../../shared/modal/modal.service';
+import { CommonModalComponent } from '../../../shared/modal/common-modal.component';
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
@@ -12,7 +13,8 @@ import { StudentManagementComponent } from '../student-management/student-manage
     CommonModule,
     RouterLink,
     AuthorManagementComponent,
-    StudentManagementComponent
+    StudentManagementComponent,
+    CommonModalComponent
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.scss']
@@ -20,43 +22,60 @@ import { StudentManagementComponent } from '../student-management/student-manage
 export class AdminDashboardComponent implements OnInit {
   activeTab: string = 'courses';
   courses: any[] = [];
-
   isCourseEnrollmentModalVisible = false;
   selectedCourseForEnrollments: any = null;
   selectedCourseEnrollmentsList: any[] = [];
-
-  constructor(private adminService: AdminService) {}
-
+  constructor(private adminService: AdminService, private modalService: ModalService) {}
   ngOnInit(): void {
     this.loadCourses();
   }
-
   loadCourses(): void {
     this.adminService.getAllCourses().subscribe({
       next: (data) => { this.courses = data; },
-      error: (err) => { console.error('Error loading courses:', err); }
+      error: (err) => {
+        console.error('Error loading courses:', err);
+        this.modalService.open('Error', 'Failed to load courses.', 'error');
+      }
     });
   }
-
   onPublish(courseId: number): void {
-    if (confirm('Are you sure you want to publish this course?')) {
-      this.adminService.publishCourse(courseId).subscribe({
-        next: () => { this.loadCourses(); },
-        error: (err) => { console.error('Error publishing course:', err); }
-      });
-    }
+    this.modalService.open(
+      'Confirm Publish',
+      'Are you sure you want to publish this course?',
+      'confirm',
+      () => {
+        this.adminService.publishCourse(courseId).subscribe({
+          next: () => {
+            this.modalService.open('Success', 'Course published successfully!', 'success');
+            this.loadCourses();
+          },
+          error: (err) => {
+            console.error('Error publishing course:', err);
+            this.modalService.open('Error', 'Failed to publish course.', 'error');
+          }
+        });
+      }
+    );
   }
-
   onDeleteCourse(courseId: number): void {
-    if (confirm('Are you sure you want to delete this course?')) {
-      this.adminService.deleteCourse(courseId).subscribe({
-        next: () => { this.loadCourses(); },
-        error: (err) => { console.error('Error deleting course:', err); }
-      });
-    }
+    this.modalService.open(
+      'Confirm Delete',
+      'Are you sure you want to delete this course?',
+      'confirm',
+      () => {
+        this.adminService.deleteCourse(courseId).subscribe({
+          next: () => {
+            this.modalService.open('Success', 'Course deleted successfully!', 'success');
+            this.loadCourses();
+          },
+          error: (err) => {
+            console.error('Error deleting course:', err);
+            this.modalService.open('Error', 'Failed to delete course.', 'error');
+          }
+        });
+      }
+    );
   }
-
-  // ✅ Updated to handle both `student` and `User` from backend
   onViewCourseEnrollments(course: any): void {
     this.selectedCourseForEnrollments = course;
     this.adminService.getCourseEnrollments(course.id).subscribe({
@@ -66,11 +85,10 @@ export class AdminDashboardComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading course enrollments:', err);
-        alert('Could not load enrollments for this course.');
+        this.modalService.open('Error', 'Could not load enrollments for this course.', 'error');
       }
     });
   }
-
   closeCourseEnrollmentModal(): void {
     this.isCourseEnrollmentModalVisible = false;
     this.selectedCourseForEnrollments = null;
