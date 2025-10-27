@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../services/admin.service';
 import { AuthorManagementComponent } from '../author-management/author-management.component';
 import { StudentManagementComponent } from '../student-management/student-management.component';
 import { ModalService } from '../../../shared/modal/modal.service';
 import { CommonModalComponent } from '../../../shared/modal/common-modal.component';
+
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     RouterLink,
     AuthorManagementComponent,
     StudentManagementComponent,
@@ -22,22 +25,41 @@ import { CommonModalComponent } from '../../../shared/modal/common-modal.compone
 export class AdminDashboardComponent implements OnInit {
   activeTab: string = 'courses';
   courses: any[] = [];
+  filteredCourses: any[] = [];
+  searchTerm: string = '';
+
   isCourseEnrollmentModalVisible = false;
   selectedCourseForEnrollments: any = null;
   selectedCourseEnrollmentsList: any[] = [];
+
   constructor(private adminService: AdminService, private modalService: ModalService) {}
+
   ngOnInit(): void {
     this.loadCourses();
   }
+
   loadCourses(): void {
     this.adminService.getAllCourses().subscribe({
-      next: (data) => { this.courses = data; },
+      next: (data) => {
+        this.courses = data;
+        this.filteredCourses = [...data];
+      },
       error: (err) => {
         console.error('Error loading courses:', err);
         this.modalService.open('Error', 'Failed to load courses.', 'error');
       }
     });
   }
+
+  onSearchChange(): void {
+    const term = this.searchTerm.toLowerCase();
+    this.filteredCourses = this.courses.filter(
+      (course) =>
+        course.title.toLowerCase().includes(term) ||
+        (course.author?.name?.toLowerCase().includes(term))
+    );
+  }
+
   onPublish(courseId: number): void {
     this.modalService.open(
       'Confirm Publish',
@@ -57,6 +79,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
+
   onDeleteCourse(courseId: number): void {
     this.modalService.open(
       'Confirm Delete',
@@ -76,6 +99,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
+
   onViewCourseEnrollments(course: any): void {
     this.selectedCourseForEnrollments = course;
     this.adminService.getCourseEnrollments(course.id).subscribe({
@@ -89,6 +113,7 @@ export class AdminDashboardComponent implements OnInit {
       }
     });
   }
+
   closeCourseEnrollmentModal(): void {
     this.isCourseEnrollmentModalVisible = false;
     this.selectedCourseForEnrollments = null;
