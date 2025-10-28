@@ -1,32 +1,42 @@
 <div class="student-dashboard container py-5">
   <!-- Header -->
   <div class="dashboard-header d-flex justify-content-between align-items-center mb-5">
-    <h2 class="fw-bold text-primary m-0">
-      <i class="fa fa-user-graduate me-2"></i> Student Dashboard
-    </h2>
-    <!-- <div class="d-flex gap-2">
-      <button class="btn btn-outline-primary" (click)="goToProfile()">
-        <i class="fa fa-user me-1"></i> Profile
-      </button>
-      <button class="btn btn-outline-success" (click)="goToMyCourses()">
-        <i class="fa fa-book me-1"></i> My Courses
-      </button>
-    </div> -->
+  <h2 class="fw-bold text-primary m-0">
+    <i class="fa fa-user-graduate me-2"></i> Student Dashboard
+  </h2>
+
+  <!-- Search Input -->
+  <div class="search-box" style="width: 300px;">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Search courses..."
+      [(ngModel)]="searchText"
+    />
   </div>
+</div>
+
+
   <!-- Loading -->
   <div *ngIf="loading" class="text-center py-5">
     <div class="spinner-border text-primary mb-3" role="status"></div>
     <p class="fw-semibold text-muted">Loading approved courses...</p>
   </div>
+
   <!-- Empty State -->
-  <div *ngIf="!loading && courses.length === 0" class="text-center py-5">
-    <i class="fa fa-folder-open fa-4x text-muted mb-3"></i>
-    <p class="lead text-muted">No approved courses are available yet!</p>
+  <div *ngIf="!loading && filteredCourses.length === 0" class="text-center py-5">
+    <i class="fa fa-search fa-4x text-muted mb-3"></i>
+    <p class="lead text-muted">No courses match your search.</p>
   </div>
+
   <!-- Courses -->
-  <div *ngIf="!loading && courses.length > 0" class="row g-4">
-    <div class="col-md-4" *ngFor="let course of courses">
-      <div class="card shadow-sm border-0 rounded-4 h-100 course-card">
+  <div *ngIf="!loading && filteredCourses.length > 0" class="row g-4">
+    <div class="col-md-4" *ngFor="let course of filteredCourses">
+      <div 
+        class="card shadow-sm border-0 rounded-4 h-100 course-card" 
+        style="cursor: pointer;" 
+        (click)="viewCourseDetails(course.id)"
+      >
         <div class="course-image-wrapper position-relative">
           <img
             [src]="course.thumbnailUrl || 'https://via.placeholder.com/400x200?text=Course+Thumbnail'"
@@ -38,18 +48,22 @@
           <h5 class="card-title text-primary">{{ course.title }}</h5>
           <p class="card-text text-muted flex-grow-1">{{ course.description }}</p>
           <p class="fw-bold text-secondary mb-3">
-  {{ course.price | currency:'INR':'symbol':'1.0-0' }}
-</p>
+            {{ course.price | currency:'INR':'symbol':'1.0-0' }}
+          </p>
 
-          <!-- View Details -->
-          <button class="btn btn-outline-primary w-100 mb-2" (click)="viewCourseDetails(course.id)">
+          <!-- View Details Button -->
+          <button 
+            class="btn btn-outline-primary w-100 mb-2" 
+            (click)="viewCourseDetails(course.id); $event.stopPropagation()"
+          >
             <i class="fa fa-eye me-1"></i> View Course
           </button>
+
           <!-- Enroll Button -->
           <button
             class="btn btn-outline-success w-100"
             [disabled]="course.isEnrolled || course.loading"
-            (click)="enrollInCourse(course.id)"
+            (click)="enrollInCourse(course.id); $event.stopPropagation()"
           >
             <i class="fa" [ngClass]="course.loading ? 'fa-spinner fa-spin' : 'fa-sign-in-alt me-1'"></i>
             {{ course.isEnrolled ? 'Enrolled' : (course.loading ? 'Enrolling...' : 'Enroll Now') }}
@@ -59,4 +73,5 @@
     </div>
   </div>
 </div>
+
 <app-common-modal></app-common-modal>

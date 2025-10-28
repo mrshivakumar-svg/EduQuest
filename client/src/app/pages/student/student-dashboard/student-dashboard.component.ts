@@ -5,18 +5,22 @@ import { HttpClientModule } from '@angular/common/http';
 import { ApiService } from '../../../services/api.service';
 import { ModalService } from '../../../shared/modal/modal.service';
 import { CommonModalComponent } from '../../../shared/modal/common-modal.component';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
   templateUrl: './student-dashboard.component.html',
   styleUrls: ['./student-dashboard.component.scss'],
-  imports: [CommonModule, RouterModule, HttpClientModule, CommonModalComponent],
+  imports: [CommonModule, RouterModule, HttpClientModule, CommonModalComponent, FormsModule],
   providers: [ApiService],
 })
+
 export class StudentDashboardComponent implements OnInit {
   courses: any[] = [];
   loading: boolean = true;
+  searchText: string = '';
 
   constructor(
     private apiService: ApiService,
@@ -114,5 +118,14 @@ export class StudentDashboardComponent implements OnInit {
 
   goToMyCourses(): void {
     this.router.navigate(['/student/my-courses']);
+  }
+  get filteredCourses() {
+    if (!this.searchText) return this.courses;
+    const lowerSearch = this.searchText.toLowerCase();
+    return this.courses.filter(
+      (course) =>
+        course.title.toLowerCase().includes(lowerSearch) 
+        
+    );
   }
 }
