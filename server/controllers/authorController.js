@@ -232,6 +232,39 @@ const getCourseById = async (req, res) => {
   }
 };
 
+const deleteCourseContent = async (req, res) => {
+  try {
+    const { contentId } = req.params;
+
+    // Find the content with course details
+    const content = await CourseContent.findOne({
+      where: { id: contentId },
+      include: [{ model: Course, as: "Course" }],
+    });
+
+    if (!content) {
+      return res.status(404).json({ message: "Content not found" });
+    }
+
+    // Verify ownership
+    if (content.Course.authorId !== req.user.id) {
+      return res.status(403).json({ message: "You are not authorized to delete this content" });
+    }
+
+    // Soft delete (optional): mark as inactive
+    // await content.update({ isActive: false });
+
+    // Hard delete:
+    await content.destroy();
+
+    res.json({ message: "Content deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting content:", err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
 
 const getMyCourses = async (req, res) => {
   try {
@@ -278,6 +311,7 @@ module.exports = {
   getCourseById,
   updateCourseContent,
   getAuthorProfile,
+  deleteCourseContent
 };
 
 

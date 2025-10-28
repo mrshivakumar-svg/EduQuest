@@ -19,6 +19,8 @@ export class CreateCourseComponent implements OnInit {
   isEditMode = false;
   courseId: string | null = null;
 
+  deletedContents: number[] = []; // 🗑️ Track deleted content IDs
+
   constructor(
     private fb: FormBuilder,
     private api: ApiService,
@@ -63,7 +65,16 @@ export class CreateCourseComponent implements OnInit {
   }
 
   removeContent(index: number): void {
-    (this.courseForm.get('contents') as FormArray).removeAt(index);
+    const contentsArray = this.courseForm.get('contents') as FormArray;
+    const content = contentsArray.at(index).value;
+
+    // If the content exists in DB, mark for deletion
+    if (content.id) {
+      this.deletedContents.push(content.id);
+    }
+
+    // Remove from form array (UI)
+    contentsArray.removeAt(index);
   }
 
   private loadCourseData(id: string): void {
@@ -82,6 +93,7 @@ export class CreateCourseComponent implements OnInit {
 
         const contentsArray = this.courseForm.get('contents') as FormArray;
         contentsArray.clear();
+
         course.contents.forEach((c: any) => {
           contentsArray.push(
             this.fb.group({
@@ -103,13 +115,11 @@ export class CreateCourseComponent implements OnInit {
   saveCourse(): void {
     console.log('🟢 Save course clicked', this.courseForm.value);
 
-    // ✅ Check if form is valid
     if (!this.courseForm.valid) {
       this.modalService.open('Error', 'Please fill all required course fields.', 'error');
       return;
     }
 
-    // ✅ Check if at least one content is added
     const contentsArray = this.courseForm.get('contents') as FormArray;
     if (contentsArray.length === 0) {
       this.modalService.open('Error', 'Please add at least one course content before saving.', 'error');
@@ -121,9 +131,10 @@ export class CreateCourseComponent implements OnInit {
     delete courseData.contents;
 
     if (this.isEditMode && this.courseId) {
-      // Update course
+      // ✅ Update existing course
       this.api.updateCourse(this.courseId, courseData).subscribe({
         next: () => {
+          // Update existing / Add new contents
           contents.forEach((c: any) => {
             if (c.id) {
               this.api.updateCourseContent(c.id, c).subscribe();
@@ -131,6 +142,12 @@ export class CreateCourseComponent implements OnInit {
               this.api.addCourseContent(Number(this.courseId), c).subscribe();
             }
           });
+
+          // 🗑️ Delete removed contents
+          this.deletedContents.forEach((contentId) => {
+            this.api.deleteCourseContent(contentId).subscribe();
+          });
+
           this.modalService.open('Success', 'Course and contents updated successfully!', 'success');
           this.router.navigate(['/author/dashboard']);
         },
@@ -140,7 +157,7 @@ export class CreateCourseComponent implements OnInit {
         }
       });
     } else {
-      // Create new course
+      // ✅ Create new course
       this.api.createCourse(courseData).subscribe({
         next: (res: any) => {
           const newCourseId = res.course.id;

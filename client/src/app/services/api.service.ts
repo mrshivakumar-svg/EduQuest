@@ -60,6 +60,12 @@ export class ApiService {
 getCourseByIdForAuthor(id: number | string): Observable<any> {
   return this.http.get(`${this.apiUrl}/author/courses/${id}`, { headers: this.getAuthHeaders() });
 }
+deleteCourseContent(contentId: number) {
+  return this.http.delete(`${this.apiUrl}/author/contents/${contentId}`, {
+    headers: this.getAuthHeaders()
+});
+}
+
 
 
   // ================== Student APIs (UNCHANGED) ==================
