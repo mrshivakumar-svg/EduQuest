@@ -1,13 +1,23 @@
 <div class="author-management">
   <h2>Create New Author</h2>
   <form [formGroup]="authorForm" (ngSubmit)="onCreateAuthor()" class="author-form">
-    <input type="text" placeholder="Name" formControlName="name">
-    <input type="email" placeholder="Email" formControlName="email">
-    <input type="password" placeholder="Password" formControlName="password">
+    <input type="text" placeholder="Name" formControlName="name" />
+    <input type="email" placeholder="Email" formControlName="email" />
+    <input type="password" placeholder="Password" formControlName="password" />
     <button type="submit" [disabled]="authorForm.invalid">Create Author</button>
   </form>
 
-  <h2>Existing Authors</h2>
+  <div class="author-header">
+    <h2>Existing Authors</h2>
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by name or email..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearchChange()"
+    />
+  </div>
+
   <table>
     <thead>
       <tr>
@@ -17,7 +27,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let author of authors">
+      <tr *ngFor="let author of filteredAuthors">
         <td>{{ author.name }}</td>
         <td>{{ author.email }}</td>
         <td class="actions">
@@ -26,7 +36,8 @@
       </tr>
     </tbody>
   </table>
-  <div *ngIf="authors.length === 0" class="empty-placeholder">
-    No authors have been created yet.
+
+  <div *ngIf="filteredAuthors.length === 0" class="empty-placeholder">
+    No authors found. Try adjusting your search.
   </div>
 </div>

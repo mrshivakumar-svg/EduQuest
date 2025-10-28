@@ -1,26 +1,109 @@
-// Imports all the table and button styles from the main dashboard
-@use '../admin-dashboard/admin-dashboard.component.scss';
+.student-management-container {
+  padding: 2rem 3rem;
+}
 
-// Ensure styles apply correctly using @extend
-// Make sure these classes exist in the imported dashboard SCSS file
-table { @extend table; }
-.actions .btn { @extend .btn; }
-.actions .view-btn { @extend .view-btn; } // Ensure .view-btn style exists
-.actions .delete-btn { @extend .delete-btn; }
-.empty-placeholder { @extend .empty-placeholder; }
+/* Header with aligned search bar */
+.student-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
 
-// ✅ Styles specific to the modal popup
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+  }
+}
+
+.search-input {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  width: 250px;
+  box-sizing: border-box;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+
+  th,
+  td {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    text-align: left;
+  }
+
+  thead th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+  }
+
+  tbody tr:hover {
+    background-color: #f1f3f5;
+  }
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+
+  .btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    color: #fff;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .view-btn {
+    background-color: #007bff;
+    &:hover {
+      background-color: #0056b3;
+    }
+  }
+
+  .delete-btn {
+    background-color: #dc3545;
+    &:hover {
+      background-color: #c82333;
+    }
+  }
+}
+
+/* Empty table message */
+.empty-placeholder {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  border: 1px dashed #dee2e6;
+  border-radius: 8px;
+  margin-top: 1rem;
+}
+
+/* Modal Styles */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000; // Ensures it's on top
+  z-index: 1000;
 }
 
 .modal-content {
@@ -28,112 +111,52 @@ table { @extend table; }
   padding: 2rem;
   border-radius: 8px;
   width: 90%;
-  max-width: 500px; // Limit modal width
+  max-width: 600px;
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 
   h3 {
     margin-top: 0;
-    color: #333; // Use a standard dark color
-  }
-
-  ul {
-    list-style-type: disc;
-    padding-left: 20px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    max-height: 200px; // Add scroll if list is long
-    overflow-y: auto;
-  }
-}
-
-.close-btn { // Style for the 'X' button
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  border: none;
-  background: transparent;
-  font-size: 1.8rem;
-  line-height: 1;
-  cursor: pointer;
-  color: #aaa;
-  &:hover {
     color: #333;
   }
-}
-
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-}
-
-.modal-content {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  width: 80%;
-  max-width: 700px;
-  max-height: 80vh; /* Keeps modal within viewport */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  position: relative;
-  display: flex;
-  flex-direction: column;
 }
 
 .close-btn {
   position: absolute;
   top: 10px;
   right: 15px;
-  background: transparent;
   border: none;
-  font-size: 1.5rem;
+  background: transparent;
+  font-size: 1.8rem;
   cursor: pointer;
+  color: #aaa;
+
+  &:hover {
+    color: #333;
+  }
 }
 
-/* ✅ Scrollable Table Container */
+/* Scrollable table in modal */
 .table-scroll-container {
-  flex: 1;
+  max-height: 400px;
   overflow-y: auto;
-  margin-top: 15px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  max-height: 400px; /* Adjust height for scrolling */
 }
 
-/* Table styling */
 .enrollments-table {
   width: 100%;
   border-collapse: collapse;
 
-  th, td {
+  th,
+  td {
     padding: 10px;
     border-bottom: 1px solid #ccc;
-    text-align: left;
   }
 
   th {
     background-color: #f8f9fa;
-    font-weight: 600;
     position: sticky;
-    top: 0; /* ✅ Makes the header stay fixed while scrolling */
-    z-index: 2;
+    top: 0;
   }
 }
-
-/* Optional nice scrollbar */
-.table-scroll-container::-webkit-scrollbar {
-  width: 8px;
-}
-.table-scroll-container::-webkit-scrollbar-thumb {
-  background: #bbb;
-  border-radius: 4px;
-}
-.table-scroll-container::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
-

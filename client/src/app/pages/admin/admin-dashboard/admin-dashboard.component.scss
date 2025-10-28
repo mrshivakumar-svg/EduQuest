@@ -1,31 +1,24 @@
-// --- Main Container ---
-// Adds spacing around the entire dashboard.
 .admin-container {
   padding: 2rem 4rem;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-// --- Headings ---
-// Styles the main title "Admin Dashboard".
 h1 {
   font-size: 2.5rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: #007bff; // Blue theme color
+  color: #007bff;
 }
-// Styles subtitles like "All Courses".
+
 h2 {
   font-size: 1.75rem;
   font-weight: 500;
-  margin-bottom: 1rem;
   border-bottom: 1px solid #dee2e6;
   padding-bottom: 0.5rem;
   color: #333;
 }
 
-// --- Tab Navigation ---
-// Styles the tab buttons.
 .tabs {
   margin-bottom: 2rem;
   border-bottom: 2px solid #dee2e6;
@@ -38,19 +31,33 @@ h2 {
     background-color: transparent;
     border-bottom: 3px solid transparent;
     margin-bottom: -2px;
-    color: #6c757d; // Grey for inactive tabs
+    color: #6c757d;
 
-    // Highlights the active tab.
     &.active {
       font-weight: 600;
-      color: #007bff; // Blue for active tab
+      color: #007bff;
       border-bottom-color: #007bff;
     }
   }
 }
 
-// --- Table Styling ---
-// Styles the data tables for courses, authors, students.
+/* --- Align All Courses & Search Bar --- */
+.course-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.search-input {
+  padding: 0.6rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  width: 250px;
+  box-sizing: border-box;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -59,7 +66,8 @@ table {
   border-radius: 8px;
   overflow: hidden;
 
-  th, td {
+  th,
+  td {
     padding: 1rem 1.5rem;
     text-align: left;
     border-bottom: 1px solid #dee2e6;
@@ -76,8 +84,6 @@ table {
   }
 }
 
-// --- Empty Table Placeholder ---
-// Styles the message shown when tables have no data.
 .empty-placeholder {
   text-align: center;
   padding: 3rem;
@@ -88,8 +94,6 @@ table {
   margin-top: 1rem;
 }
 
-// --- Status Badge Styling ---
-// Styles the 'pending' and 'approved' badges.
 .status {
   padding: 0.3rem 0.8rem;
   border-radius: 1rem;
@@ -105,19 +109,15 @@ table {
     background-color: #fff3cd;
     color: #856404;
   }
-  // Optional: Add rejected status style if needed
   &.rejected {
     background-color: #f8d7da;
     color: #721c24;
   }
 }
 
-// --- Action Button Styling ---
-// Styles all buttons within the 'actions' table column.
 .actions {
-  // General button styles
-  button, .btn {
-    // ✅ REDUCED PADDING & FONT-SIZE
+  button,
+  .btn {
     padding: 0.5rem 1rem;
     font-size: 0.85rem;
     border-radius: 4px;
@@ -133,29 +133,35 @@ table {
     }
   }
 
-  // Specific button styles
-  .view-btn { // ✅ Styles the "View" button blue
+  .view-btn {
     background-color: #007bff;
-    &:hover { background-color: #0056b3; }
+    &:hover {
+      background-color: #0056b3;
+    }
   }
 
-  .publish-btn { // Styles the "Publish" button green
+  .publish-btn {
     background-color: #28a745;
-    &:hover { background-color: #218838; }
+    &:hover {
+      background-color: #218838;
+    }
   }
 
-  .delete-btn { // Styles the "Delete" button red
+  .delete-btn {
     background-color: #dc3545;
-    &:hover { background-color: #c82333; }
+    &:hover {
+      background-color: #c82333;
+    }
   }
 
-  .enroll-btn { // Styles the "View Enrollments" button teal
+  .enroll-btn {
     background-color: #17a2b8;
-    &:hover { background-color: #138496; }
+    &:hover {
+      background-color: #138496;
+    }
   }
 }
 
-// Styles for the modal popups
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -182,15 +188,6 @@ table {
     margin-top: 0;
     color: #333;
   }
-
-  ul {
-    list-style-type: disc;
-    padding-left: 20px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    max-height: 300px;
-    overflow-y: auto;
-  }
 }
 
 .close-btn {
@@ -200,11 +197,10 @@ table {
   border: none;
   background: transparent;
   font-size: 1.8rem;
-  line-height: 1;
   cursor: pointer;
   color: #aaa;
+
   &:hover {
     color: #333;
   }
 }
-

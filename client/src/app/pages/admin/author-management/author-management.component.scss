@@ -1,8 +1,5 @@
-// This rule imports all the main table and button styles from the parent dashboard.
-// This keeps the look consistent without duplicating code.
 @import '../admin-dashboard/admin-dashboard.component.scss';
 
-// What this does: Styles the form for creating a new author.
 .author-form {
   display: flex;
   gap: 1rem;
@@ -25,10 +22,44 @@
     color: #ffffff;
     cursor: pointer;
     font-size: 1rem;
-    
+
     &:disabled {
       background-color: #a0c7ff;
       cursor: not-allowed;
     }
   }
+}
+
+/* Header for Existing Authors + Search bar */
+.author-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+  }
+
+  .search-input {
+    padding: 0.6rem 1rem;
+    font-size: 1rem;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    width: 250px;
+    box-sizing: border-box;
+  }
+}
+
+/* Empty table message */
+.empty-placeholder {
+  text-align: center;
+  padding: 2rem;
+  color: #6c757d;
+  background-color: #f8f9fa;
+  border: 1px dashed #dee2e6;
+  border-radius: 8px;
+  margin-top: 1rem;
 }

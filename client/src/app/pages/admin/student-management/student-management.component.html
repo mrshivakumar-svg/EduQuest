@@ -1,15 +1,28 @@
-<div class="student-management">
-  <h2>Existing Students</h2>
+<div class="student-management-container">
+  <div class="student-header">
+    <h2>All Students</h2>
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search by student name..."
+      [(ngModel)]="searchTerm"
+      (input)="onSearchChange()"
+    />
+  </div>
+
   <table>
     <thead>
       <tr>
+        <th>#</th>
         <th>Name</th>
         <th>Email</th>
         <th>Actions</th>
       </tr>
     </thead>
+
     <tbody>
-      <tr *ngFor="let student of students">
+      <tr *ngFor="let student of filteredStudents; let i = index">
+        <td>{{ i + 1 }}</td>
         <td>{{ student.name }}</td>
         <td>{{ student.email }}</td>
         <td class="actions">
@@ -19,39 +32,42 @@
       </tr>
     </tbody>
   </table>
-  <div *ngIf="students.length === 0" class="empty-placeholder">
-    No students have registered yet.
+
+  <div *ngIf="filteredStudents.length === 0" class="empty-placeholder">
+    No students found. Try adjusting your search.
   </div>
-</div>
-<!-- :white_check_mark: Modal Popup -->
-<div *ngIf="isModalVisible" class="modal-overlay" (click)="closeModal()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <button class="close-btn" (click)="closeModal()">×</button>
-    <h3>Enrollments for {{ selectedStudent?.name }}</h3>
-    <!-- :white_check_mark: Scrollable table wrapper -->
-    <div class="table-scroll-container" *ngIf="selectedStudentEnrollments.length > 0; else noEnrollments">
-      <table class="enrollments-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Course Title</th>
-            <th>Course ID</th>
-            <th>Enrolled At</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let enrollment of selectedStudentEnrollments; let i = index">
-            <td>{{ i + 1 }}</td>
-            <td>{{ enrollment.course?.title || 'Course Title Missing' }}</td>
-            <td>{{ enrollment.courseId }}</td>
-            <td>{{ enrollment.enrolledAt | date: 'medium' }}</td>
-          </tr>
-        </tbody>
-      </table>
+
+  <!-- Student Enrollments Modal -->
+  <div *ngIf="isModalVisible" class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeModal()">×</button>
+      <h3>Enrollments for {{ selectedStudent?.name }}</h3>
+
+      <div class="table-scroll-container" *ngIf="selectedStudentEnrollments.length > 0; else noEnrollments">
+        <table class="enrollments-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Course Title</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let enrollment of selectedStudentEnrollments; let j = index">
+              <td>{{ j + 1 }}</td>
+              <td>{{ enrollment.course?.title || 'Course Title Missing' }}</td>
+              <td>{{ enrollment.status || 'N/A' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <ng-template #noEnrollments>
+        <p>No enrollments found for this student.</p>
+      </ng-template>
     </div>
-    <ng-template #noEnrollments>
-      <p>This student is not enrolled in any courses.</p>
-    </ng-template>
   </div>
+
+  <!-- Common Modal Component -->
+  <app-common-modal></app-common-modal>
 </div>
-<app-common-modal></app-common-modal>
