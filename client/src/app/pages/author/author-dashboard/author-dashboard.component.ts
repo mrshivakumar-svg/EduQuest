@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { ModalService } from '../../../shared/modal/modal.service';
 import { CommonModalComponent } from '../../../shared/modal/common-modal.component';
@@ -11,12 +12,14 @@ import { CommonModalComponent } from '../../../shared/modal/common-modal.compone
   templateUrl: './author-dashboard.component.html',
   styleUrls: ['./author-dashboard.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule, CommonModalComponent],
+  imports: [CommonModule, RouterModule, HttpClientModule, FormsModule, CommonModalComponent],
   providers: [ApiService]
 })
 export class AuthorDashboardComponent implements OnInit {
   courses: any[] = [];
+  filteredCourses: any[] = [];
   loading: boolean = true;
+  searchTerm: string = '';
 
   constructor(
     private api: ApiService,
@@ -29,7 +32,6 @@ export class AuthorDashboardComponent implements OnInit {
 
     const token = localStorage.getItem('token');
     if (!token) {
-      console.warn('⚠️ No token found. Redirecting to login.');
       this.modalService.open('Error', 'Please login to continue.', 'error');
       this.router.navigate(['/login']);
       return;
@@ -42,10 +44,9 @@ export class AuthorDashboardComponent implements OnInit {
     this.api.getAuthorCourses().subscribe({
       next: (res: any) => {
         this.courses = res.courses || [];
+        this.filteredCourses = [...this.courses];
         this.loading = false;
-
-        // Default sort by recent
-        this.sortCourses('enrollments');
+        this.sortCourses('enrollments'); // Default sort
       },
       error: (err) => {
         console.error('Error fetching courses:', err);
@@ -64,17 +65,22 @@ export class AuthorDashboardComponent implements OnInit {
 
   sortCourses(criteria: string) {
     if (criteria === 'enrollments') {
-      this.courses.sort((a, b) => b.enrollmentsCount - a.enrollmentsCount);
+      this.filteredCourses.sort((a, b) => b.enrollmentsCount - a.enrollmentsCount);
     } else if (criteria === 'recent') {
-      this.courses.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+      this.filteredCourses.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
     }
   }
 
   onSortChange(event: Event) {
     const value = (event.target as HTMLSelectElement)?.value;
-    if (value) {
-      this.sortCourses(value);
-    }
+    if (value) this.sortCourses(value);
+  }
+
+  filterCourses() {
+    const term = this.searchTerm.toLowerCase();
+    this.filteredCourses = this.courses.filter(course =>
+      course.title.toLowerCase().includes(term)
+    );
   }
 
   editCourse(courseId: string): void {
