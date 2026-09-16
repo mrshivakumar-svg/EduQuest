@@ -21,3 +21,22 @@ settings:
   followRedirects: true
   maxRedirects: 5
   forwardAuthorizationHeader: false
+
+examples:
+  - name: login
+    request:
+      url: http://localhost:5000/api/auth/login
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "abc@example.com",
+            "password": "password123"
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: success
