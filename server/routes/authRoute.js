@@ -12,7 +12,7 @@ const {
 
 // --- Public Routes ---
 router.post('/register', registerUser);
-router.post('/login', loginUser);
+router.post('/logins', loginUser);
 
 // --- Protected Route ---
 // ✅ CORRECTED: Use 'authMiddleware' directly, without calling it with ()
