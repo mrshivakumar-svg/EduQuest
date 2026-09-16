@@ -19,7 +19,7 @@ export class ApiService {
     return this.http.post(`${this.apiUrl}/auth/register`, data);
   }
   loginUser(data: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/auth/logins`, data);
+    return this.http.post(`${this.apiUrl}/auth/login`, data);
   }
   // ================== Author APIs ==================
   getAuthorCourses(): Observable<any> {
