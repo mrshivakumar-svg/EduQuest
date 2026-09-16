@@ -1,0 +1,40 @@
+info:
+  name: student courses
+  type: http
+  seq: 3
+
+http:
+  method: GET
+  url: http://localhost:5000/api/student/courses
+  body:
+    type: json
+    data: ""
+  auth:
+    type: bearer
+    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzg5NTY4NTI4LCJleHAiOjE3ODk2NTQ5Mjh9.3A2rHo_yNG2VYKxbSXWnUdIukMrL8d-h_VwCPs5ktIE
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: login
+    request:
+      url: http://localhost:5000/api/auth/login
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "abc@example.com",
+            "password": "password123"
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: success
