@@ -50,3 +50,24 @@ examples:
             "email": "jane@example.com",
             "role": "author"
           }
+  - name: email already exists
+    request:
+      url: http://localhost:5000/api/admin/authors
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "Jane Author",
+            "email": "jane@example.com",
+            "password": "password123"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: json
+        data: |-
+          {
+            "message": "User with this email already exists"
+          }

@@ -35,3 +35,18 @@ examples:
           {
             "message": "Author deleted successfully"
           }
+  - name: author not found
+    request:
+      url: http://localhost:5000/api/admin/authors/9999
+      method: DELETE
+      body:
+        type: none
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Author not found"
+          }

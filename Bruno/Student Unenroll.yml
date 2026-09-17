@@ -35,3 +35,18 @@ examples:
           {
             "message": "Unenrolled successfully"
           }
+  - name: not enrolled
+    request:
+      url: http://localhost:5000/api/student/courses/1/unenroll
+      method: DELETE
+      body:
+        type: none
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Enrollment not found"
+          }

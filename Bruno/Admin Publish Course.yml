@@ -39,3 +39,18 @@ examples:
               "status": "approved"
             }
           }
+  - name: course not found
+    request:
+      url: http://localhost:5000/api/admin/courses/9999/publish
+      method: PUT
+      body:
+        type: none
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Course not found"
+          }

@@ -39,3 +39,18 @@ examples:
             "fileUrl": "https://example.com/video.mp4",
             "contentType": "video"
           }
+  - name: content not found
+    request:
+      url: http://localhost:5000/api/student/courses/1/contents/9999
+      method: GET
+      body:
+        type: none
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Content not found"
+          }

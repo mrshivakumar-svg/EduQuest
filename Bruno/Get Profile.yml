@@ -38,3 +38,18 @@ examples:
             "email": "abc@example.com",
             "role": "student"
           }
+  - name: no token
+    request:
+      url: http://localhost:5000/api/auth/profile
+      method: GET
+      body:
+        type: none
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Not authorized, no token"
+          }

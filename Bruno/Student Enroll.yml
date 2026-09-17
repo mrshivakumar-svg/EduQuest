@@ -40,3 +40,33 @@ examples:
               "studentId": 18
             }
           }
+  - name: already enrolled
+    request:
+      url: http://localhost:5000/api/student/courses/1/enroll
+      method: POST
+      body:
+        type: none
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Already enrolled in this course"
+          }
+  - name: course not found
+    request:
+      url: http://localhost:5000/api/student/courses/9999/enroll
+      method: POST
+      body:
+        type: none
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Course not found"
+          }

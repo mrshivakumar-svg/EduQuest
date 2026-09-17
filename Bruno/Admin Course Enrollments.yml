@@ -45,3 +45,18 @@ examples:
               }
             ]
           }
+  - name: course not found
+    request:
+      url: http://localhost:5000/api/admin/courses/9999/enrollments
+      method: GET
+      body:
+        type: none
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Course not found"
+          }

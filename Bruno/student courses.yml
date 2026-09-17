@@ -21,6 +21,36 @@ settings:
   forwardAuthorizationHeader: false
 
 examples:
+  - name: no token
+    request:
+      url: http://localhost:5000/api/student/courses
+      method: GET
+      body:
+        type: none
+    response:
+      status: 401
+      statusText: Unauthorized
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Not authorized, no token"
+          }
+  - name: forbidden not a student
+    request:
+      url: http://localhost:5000/api/student/courses
+      method: GET
+      body:
+        type: none
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Forbidden: You do not have permission for this action"
+          }
   - name: Student course
     request:
       url: http://localhost:5000/api/student/courses

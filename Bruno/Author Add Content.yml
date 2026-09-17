@@ -55,3 +55,25 @@ examples:
               "contentType": "video"
             }
           }
+  - name: course not found
+    request:
+      url: http://localhost:5000/api/author/courses/9999/contents
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "courseId": 9999,
+            "title": "Lesson 1",
+            "fileUrl": "https://example.com/video.mp4",
+            "contentType": "video"
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Course not found"
+          }

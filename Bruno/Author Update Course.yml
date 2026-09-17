@@ -56,3 +56,41 @@ examples:
               "status": "pending"
             }
           }
+  - name: course not found
+    request:
+      url: http://localhost:5000/api/author/courses/9999
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "title": "X"
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Course not found"
+          }
+  - name: cannot edit approved course
+    request:
+      url: http://localhost:5000/api/author/courses/1
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "title": "X"
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Cannot edit approved/rejected courses"
+          }

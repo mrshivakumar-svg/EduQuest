@@ -43,3 +43,18 @@ examples:
               }
             }
           ]
+  - name: forbidden not an admin
+    request:
+      url: http://localhost:5000/api/admin/courses
+      method: GET
+      body:
+        type: none
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Forbidden: You do not have permission for this action"
+          }

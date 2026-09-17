@@ -53,3 +53,43 @@ examples:
       body:
         type: text
         data: success
+  - name: user not found
+    request:
+      url: http://localhost:5000/api/auth/login
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "missing@example.com",
+            "password": "password123"
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      body:
+        type: json
+        data: |-
+          {
+            "message": "User not found"
+          }
+  - name: invalid credentials
+    request:
+      url: http://localhost:5000/api/auth/login
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "email": "abc@example.com",
+            "password": "wrongpassword"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Invalid credentials"
+          }

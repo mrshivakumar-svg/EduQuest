@@ -66,3 +66,47 @@ examples:
       body:
         type: text
         data: ""
+  - name: user already exists
+    request:
+      url: http://localhost:5000/api/auth/register
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "ABC Doe",
+            "email": "abc@example.com",
+            "password": "password123",
+            "role": "student"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      body:
+        type: json
+        data: |-
+          {
+            "message": "User already exists"
+          }
+  - name: admin cannot self-register
+    request:
+      url: http://localhost:5000/api/auth/register
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "Admin",
+            "email": "admin@example.com",
+            "password": "password123",
+            "role": "admin"
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Admin cannot self-register"
+          }
