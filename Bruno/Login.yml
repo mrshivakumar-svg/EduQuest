@@ -22,6 +22,15 @@ settings:
   maxRedirects: 5
   forwardAuthorizationHeader: false
 
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        if (res.body && res.body.token) {
+          bru.setEnvVar("token", res.body.token);
+          console.log("Token saved to environment:", res.body.token);
+        }
+
 examples:
   - name: login
     request:

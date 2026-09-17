@@ -1,0 +1,37 @@
+info:
+  name: Admin Delete Author
+  type: http
+  seq: 16
+
+http:
+  method: DELETE
+  url: http://localhost:5000/api/admin/authors/5
+  body:
+    type: none
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: delete author
+    request:
+      url: http://localhost:5000/api/admin/authors/5
+      method: DELETE
+      body:
+        type: none
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Author deleted successfully"
+          }

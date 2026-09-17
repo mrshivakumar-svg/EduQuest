@@ -1,0 +1,42 @@
+info:
+  name: Student Enroll
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: http://localhost:5000/api/student/courses/1/enroll
+  body:
+    type: none
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: enroll
+    request:
+      url: http://localhost:5000/api/student/courses/1/enroll
+      method: POST
+      body:
+        type: none
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Enrolled successfully",
+            "enrollment": {
+              "id": 1,
+              "courseId": 1,
+              "studentId": 18
+            }
+          }

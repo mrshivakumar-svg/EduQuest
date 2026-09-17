@@ -1,0 +1,52 @@
+info:
+  name: Admin Create Author
+  type: http
+  seq: 15
+
+http:
+  method: POST
+  url: http://localhost:5000/api/admin/authors
+  body:
+    type: json
+    data: |-
+      {
+        "name": "Jane Author",
+        "email": "jane@example.com",
+        "password": "password123"
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: create author
+    request:
+      url: http://localhost:5000/api/admin/authors
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "Jane Author",
+            "email": "jane@example.com",
+            "password": "password123"
+          }
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: json
+        data: |-
+          {
+            "id": 5,
+            "name": "Jane Author",
+            "email": "jane@example.com",
+            "role": "author"
+          }

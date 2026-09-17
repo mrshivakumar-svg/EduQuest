@@ -1,0 +1,59 @@
+info:
+  name: Author Create Course
+  type: http
+  seq: 10
+
+http:
+  method: POST
+  url: http://localhost:5000/api/author/courses
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Intro to Angular",
+        "description": "Learn Angular basics",
+        "price": 49.99,
+        "expiryDate": "2026-12-31",
+        "thumbnailUrl": "https://example.com/thumb.jpg"
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: create course
+    request:
+      url: http://localhost:5000/api/author/courses
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "title": "Intro to Angular",
+            "description": "Learn Angular basics",
+            "price": 49.99,
+            "expiryDate": "2026-12-31",
+            "thumbnailUrl": "https://example.com/thumb.jpg"
+          }
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Course created successfully, pending admin approval",
+            "course": {
+              "id": 1,
+              "title": "Intro to Angular",
+              "status": "pending",
+              "authorId": 5
+            }
+          }

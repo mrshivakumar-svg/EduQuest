@@ -1,0 +1,37 @@
+info:
+  name: Student Unenroll
+  type: http
+  seq: 9
+
+http:
+  method: DELETE
+  url: http://localhost:5000/api/student/courses/1/unenroll
+  body:
+    type: none
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: unenroll
+    request:
+      url: http://localhost:5000/api/student/courses/1/unenroll
+      method: DELETE
+      body:
+        type: none
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Unenrolled successfully"
+          }

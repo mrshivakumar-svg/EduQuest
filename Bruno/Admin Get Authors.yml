@@ -1,0 +1,42 @@
+info:
+  name: Admin Get Authors
+  type: http
+  seq: 14
+
+http:
+  method: GET
+  url: http://localhost:5000/api/admin/authors
+  body:
+    type: none
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: get authors
+    request:
+      url: http://localhost:5000/api/admin/authors
+      method: GET
+      body:
+        type: none
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "id": 5,
+              "name": "Jane Author",
+              "email": "jane@example.com",
+              "createdAt": "2026-09-16T10:00:00.000Z"
+            }
+          ]

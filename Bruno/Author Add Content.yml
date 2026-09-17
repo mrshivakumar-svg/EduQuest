@@ -1,0 +1,57 @@
+info:
+  name: Author Add Content
+  type: http
+  seq: 12
+
+http:
+  method: POST
+  url: http://localhost:5000/api/author/courses/1/contents
+  body:
+    type: json
+    data: |-
+      {
+        "courseId": 1,
+        "title": "Lesson 1",
+        "fileUrl": "https://example.com/video.mp4",
+        "contentType": "video"
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: add content
+    request:
+      url: http://localhost:5000/api/author/courses/1/contents
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "courseId": 1,
+            "title": "Lesson 1",
+            "fileUrl": "https://example.com/video.mp4",
+            "contentType": "video"
+          }
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Content added successfully",
+            "content": {
+              "id": 1,
+              "courseId": 1,
+              "title": "Lesson 1",
+              "contentType": "video"
+            }
+          }

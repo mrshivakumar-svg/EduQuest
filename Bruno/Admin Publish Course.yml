@@ -1,0 +1,41 @@
+info:
+  name: Admin Publish Course
+  type: http
+  seq: 18
+
+http:
+  method: PUT
+  url: http://localhost:5000/api/admin/courses/1/publish
+  body:
+    type: none
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: publish course
+    request:
+      url: http://localhost:5000/api/admin/courses/1/publish
+      method: PUT
+      body:
+        type: none
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Course published successfully",
+            "course": {
+              "id": 1,
+              "status": "approved"
+            }
+          }

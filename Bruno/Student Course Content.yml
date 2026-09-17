@@ -1,0 +1,41 @@
+info:
+  name: Student Course Content
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: http://localhost:5000/api/student/courses/1/contents/1
+  body:
+    type: none
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: course content
+    request:
+      url: http://localhost:5000/api/student/courses/1/contents/1
+      method: GET
+      body:
+        type: none
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: json
+        data: |-
+          {
+            "id": 1,
+            "courseId": 1,
+            "title": "Lesson 1",
+            "fileUrl": "https://example.com/video.mp4",
+            "contentType": "video"
+          }

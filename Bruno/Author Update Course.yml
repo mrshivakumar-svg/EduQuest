@@ -1,0 +1,58 @@
+info:
+  name: Author Update Course
+  type: http
+  seq: 11
+
+http:
+  method: PUT
+  url: http://localhost:5000/api/author/courses/1
+  body:
+    type: json
+    data: |-
+      {
+        "title": "Intro to Angular (Updated)",
+        "description": "Updated description",
+        "price": 39.99,
+        "expiryDate": "2026-12-31",
+        "thumbnailUrl": "https://example.com/thumb.jpg"
+      }
+  auth:
+    type: bearer
+    token: "{{token}}"
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
+
+examples:
+  - name: update course
+    request:
+      url: http://localhost:5000/api/author/courses/1
+      method: PUT
+      body:
+        type: json
+        data: |-
+          {
+            "title": "Intro to Angular (Updated)",
+            "description": "Updated description",
+            "price": 39.99,
+            "expiryDate": "2026-12-31",
+            "thumbnailUrl": "https://example.com/thumb.jpg"
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: json
+        data: |-
+          {
+            "message": "Course updated successfully",
+            "course": {
+              "id": 1,
+              "title": "Intro to Angular (Updated)",
+              "status": "pending"
+            }
+          }
