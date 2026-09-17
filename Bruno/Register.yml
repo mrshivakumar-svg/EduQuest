@@ -47,3 +47,22 @@ examples:
       body:
         type: text
         data: ""
+  - name: register 2
+    request:
+      url: http://localhost:5000/api/auth/register
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "name": "ABCDEF",
+            "email": "abcdef@example.com",
+            "password": "password1234",
+            "role": "student"
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
