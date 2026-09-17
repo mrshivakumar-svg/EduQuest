@@ -11,7 +11,7 @@ http:
     data: ""
   auth:
     type: bearer
-    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTgsInJvbGUiOiJzdHVkZW50IiwiaWF0IjoxNzg5NTY4NTI4LCJleHAiOjE3ODk2NTQ5Mjh9.3A2rHo_yNG2VYKxbSXWnUdIukMrL8d-h_VwCPs5ktIE
+    token: "{{studentToken}}"
 
 settings:
   encodeUrl: true

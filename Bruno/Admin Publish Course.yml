@@ -10,7 +10,7 @@ http:
     type: none
   auth:
     type: bearer
-    token: "{{token}}"
+    token: "{{adminToken}}"
 
 settings:
   encodeUrl: true

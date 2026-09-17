@@ -18,7 +18,7 @@ http:
       }
   auth:
     type: bearer
-    token: "{{token}}"
+    token: "{{authorToken}}"
 
 settings:
   encodeUrl: true

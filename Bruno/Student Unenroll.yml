@@ -10,7 +10,7 @@ http:
     type: none
   auth:
     type: bearer
-    token: "{{token}}"
+    token: "{{studentToken}}"
 
 settings:
   encodeUrl: true

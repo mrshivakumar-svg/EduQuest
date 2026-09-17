@@ -28,7 +28,11 @@ runtime:
       code: |-
         if (res.body && res.body.token) {
           bru.setEnvVar("token", res.body.token);
-          console.log("Token saved to environment:", res.body.token);
+          const role = res.body.user && res.body.user.role;
+          if (role === "student") bru.setEnvVar("studentToken", res.body.token);
+          if (role === "author") bru.setEnvVar("authorToken", res.body.token);
+          if (role === "admin") bru.setEnvVar("adminToken", res.body.token);
+          console.log("Saved token for role:", role);
         }
 
 examples:
